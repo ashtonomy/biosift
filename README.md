@@ -4,7 +4,7 @@ Repository containing code to replicate BioSift benchmarks ([repo](https://githu
 ---
 ### TODO:
 - [x] Create and share repo
-- [ ] Import dataset info from https://github.com/pathology-dynamics/biosift
+- [x] Import dataset info from https://github.com/pathology-dynamics/biosift
 - [ ] Write script to compile dataset using PubMed IDs
 - [ ] Benchmarking Experiments
   - [ ] Weak Supervision
