@@ -101,14 +101,14 @@ class PubFetcher:
             
             # Handle failed request
             if isinstance(records, int):
-                logger.warning("Unable to process pmids {start_idx} to {end_idx} due to {records} response.")
+                logger.warning(f"Unable to process pmids {start_idx} to {end_idx} due to {records} response.")
                 time.sleep(self.timeout)
                 tries += 1
             else:
                 self.iteration += 1
                 return records
         
-        logger.warning("Exceeded max request attempts for pmids {start_idx} to {end_idx}. Returning None")
+        logger.warning(f"Exceeded max request attempts for pmids {start_idx} to {end_idx}. Returning None")
         self.iteration += 1
         return None
     
