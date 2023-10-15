@@ -13,7 +13,7 @@ import time
 
 logger = logging.getLogger(__name__)
 
-# Type aliases for id arguments. Iterab
+# Type aliases for id arguments. 
 PMID = Union[int, str]
 PMIDList = List[PMID]
 
@@ -167,8 +167,8 @@ class PubFetcher:
         # Build endpoint with parameters
         req = self.base
         req += f'&id={ids}'
-        req += f'&retmode={retmode}'
-        req += f'&rettype={rettype}'
+        req += f'&retmode={retmode}' if retmode is not None else ''
+        req += f'&rettype={rettype}' if rettype is not None else ''
         req += f'&retstart={retstart}' if retstart is not None else ''
         req += f'&retmax={retmax}' if retmax is not None else ''
         if kwargs is not None:

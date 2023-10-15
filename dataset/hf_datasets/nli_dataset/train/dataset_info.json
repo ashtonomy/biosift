@@ -1,0 +1,28 @@
+{
+  "citation": "",
+  "description": "",
+  "features": {
+    "PMID": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "Title": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Abstract": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Hypothesis": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Entailment": {
+      "dtype": "float64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": ""
+}

@@ -1,0 +1,64 @@
+{
+  "citation": "",
+  "description": "",
+  "features": {
+    "PMID": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "Title": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Abstract": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Split": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Number of Annotators": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "Aggregate": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "Has Human Subjects": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "Has Target Disease": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "Cohort Study or Clinical Trial": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "Has Quantitative Outcome Measure": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "Has Study Drug(s)": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "Has Population Size": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "Has Comparator Group": {
+      "dtype": "float64",
+      "_type": "Value"
+    },
+    "__index_level_0__": {
+      "dtype": "int64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": ""
+}
