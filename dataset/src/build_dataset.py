@@ -7,8 +7,14 @@ import os
 import logging
 from argparse import ArgumentParser
 import typing
-from datasets import load_dataset, Dataset, DatasetDict
-
+from datasets import (
+    load_dataset, 
+    Dataset, 
+    DatasetDict,
+    Features,
+    Sequence,
+    Value
+)
 logger = logging.getLogger(__name__)
 
 DATASET_DIR=os.path.dirname(os.path.dirname(__file__))
@@ -105,7 +111,7 @@ def process_nli(binary: Dataset, save_dir: str):
 
     logger.info("Processing NLI dataset.")
     nli_dataset = binary.map(convert_to_nli, batched=True, remove_columns=binary["train"].column_names)
-    
+
     save_path = os.path.join(save_dir, "nli_dataset")
     nli_dataset.save_to_disk(save_path)
     
@@ -123,6 +129,8 @@ def process_binary(
     logger.info("Processing binary dataset.")
     binary_df = pd.read_csv(binary_label_path)
     binary_data = pd.merge(abstract_df, binary_df, on="PMID")
+    binary_data["label"] = binary_data.iloc[:, 4:].astype('float64').values.tolist()
+
     binary_dataset = {
         "train": Dataset.from_pandas(binary_data[binary_data["Split"] == "Train"]),
         "validation": Dataset.from_pandas(binary_data[binary_data["Split"] =="Validation"]),
@@ -147,6 +155,8 @@ def process_soft(
     logger.info("Processing soft dataset.")
     soft_df = pd.read_csv(soft_label_path)
     soft_data = pd.merge(abstract_df, soft_df, on="PMID")
+    soft_data["label"] = soft_data.iloc[:, 4:].astype('float64').values.tolist()
+
     soft_dataset = {
         "train": Dataset.from_pandas(soft_data[soft_data["Split"] == "Train"]),
         "validation": Dataset.from_pandas(soft_data[soft_data["Split"] =="Validation"]),

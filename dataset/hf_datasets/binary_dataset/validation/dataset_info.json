@@ -54,6 +54,13 @@
       "dtype": "float64",
       "_type": "Value"
     },
+    "label": {
+      "feature": {
+        "dtype": "float64",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
     "__index_level_0__": {
       "dtype": "int64",
       "_type": "Value"
