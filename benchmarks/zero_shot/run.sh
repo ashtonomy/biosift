@@ -36,7 +36,7 @@ module add anaconda3/2022.05-gcc/9.5.0
 
 # Navigate to the working directory (exit on failure)
 # Assumes script is launched from target dir
-cd $PBS_O_WORKDIR
+cd $PBS_O_WOKRDIR
 
 # Activate conda environment
 source activate $ENV_PATH

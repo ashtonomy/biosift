@@ -1,12 +1,6 @@
-import logging
-import random
-import warnings
 import os
 import typing
-import sys
-import numpy as np
-from typing import List, Optional
-from dataclasses import dataclass, field
+from datasets import load_dataset, load_from_disk
 
 # import ray
 # from ray.train.huggingface.transformers import (
@@ -14,12 +8,6 @@ from dataclasses import dataclass, field
 #     prepare_trainer,
 # )
 # from ray.train import ScalingConfig
-
-import evaluate
-
-import datasets
-from datasets import Value, load_dataset
-from datasets import load_dataset, load_from_disk
 
 import transformers
 from transformers import (
@@ -34,19 +22,17 @@ from transformers import (
     default_data_collator,
     set_seed,
 )
+import evaluate
 
 LABEL_LIST = [
-    "Aggregate",
-    "Has Human Subjects",
-    "Has Target Disease",
     "Cohort Study or Clinical Trial",
+    "Has Comparator Group",
+    "Has Human Subjects",
+    "Has Population Size",
     "Has Quantitative Outcome Measure",
     "Has Study Drug(s)",
-    "Has Population Size",
-    "Has Comparator Group"
+    "Has Target Disease"
 ]
-
-logger = logging.getLogger(__name__)
 
 @dataclass
 class DataTrainingArguments:
@@ -286,6 +272,11 @@ def main():
             )
 
 
+    if data_args.remove_splits is not None:
+        for split in data_args.remove_splits.split(","):
+            logger.info(f"removing split {split}")
+            raw_datasets.pop(split)
+
     if data_args.train_split_name is not None:
         logger.info(f"using {data_args.validation_split_name} as validation set")
         raw_datasets["train"] = raw_datasets[data_args.train_split_name]
@@ -316,8 +307,25 @@ def main():
     if raw_datasets["train"].features["label"].dtype == "list":  # multi-label classification
         is_multi_label = True
         logger.info("Label type is list, doing multi-label classification")
-
+    # Trying to find the number of labels in a multi-label classification task
+    # We have to deal with common cases that labels appear in the training set but not in the validation/test set.
+    # So we build the label list from the union of labels in train/val/test.
     label_list = LABEL_LIST
+    for split in ["validation", "test"]:
+        if split in raw_datasets:
+            val_or_test_labels = LABEL_LIST
+            diff = set(val_or_test_labels).difference(set(label_list))
+            if len(diff) > 0:
+                # add the labels that appear in val/test but not in train, throw a warning
+                logger.warning(
+                    f"Labels {diff} in {split} set but not in training set, adding them to the label list"
+                )
+                label_list += list(diff)
+    # if label is -1, we throw a warning and remove it from the label list
+    for label in label_list:
+        if label == -1:
+            logger.warning("Label -1 found in label list, removing it.")
+            label_list.remove(label)
 
     label_list.sort()
     num_labels = len(label_list)
@@ -357,6 +365,8 @@ def main():
         # We will pad later, dynamically at batch creation, to the max sequence length in each batch
         padding = False
 
+    # for training ,we will update the config with label infos,
+    # if do_train is not set, we will use the label infos in the config
     if training_args.do_train: 
         label_to_id = {v: i for i, v in enumerate(label_list)}
         # update config with label infos
@@ -379,6 +389,12 @@ def main():
         )
     max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
 
+    def multi_labels_to_ids(labels: List[str]) -> List[float]:
+        ids = [0.0] * len(label_to_id)  # BCELoss requires float as target type
+        for label in labels:
+            ids[label_to_id[label]] = 1.0
+        return ids
+
     def preprocess_function(examples):
         if data_args.text_column_names is not None:
             text_column_names = data_args.text_column_names.split(",")
@@ -389,8 +405,11 @@ def main():
                     examples["sentence"][i] += data_args.text_column_delimiter + examples[column][i]
         # Tokenize the texts
         result = tokenizer(examples["sentence"], padding=padding, max_length=max_seq_length, truncation=True)
-        if "label" in examples:
-            result["label"] = examples["label"]
+        if label_to_id is not None and "label" in examples:
+            if is_multi_label:
+                result["label"] = [multi_labels_to_ids(l) for l in examples["label"]]
+            else:
+                result["label"] = [(label_to_id[str(l)] if l != -1 else -1) for l in examples["label"]]
         return result
 
     # Running the preprocessing pipeline on all the datasets
@@ -409,6 +428,9 @@ def main():
         if data_args.shuffle_train_dataset:
             logger.info("Shuffling the training dataset")
             train_dataset = train_dataset.shuffle(seed=data_args.shuffle_seed)
+        if data_args.max_train_samples is not None:
+            max_train_samples = min(len(train_dataset), data_args.max_train_samples)
+            train_dataset = train_dataset.select(range(max_train_samples))
 
     if training_args.do_eval:
         if "validation" not in raw_datasets and "validation_matched" not in raw_datasets:
@@ -420,10 +442,18 @@ def main():
         else:
             eval_dataset = raw_datasets["validation"]
 
+        if data_args.max_eval_samples is not None:
+            max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
+            eval_dataset = eval_dataset.select(range(max_eval_samples))
+
     if training_args.do_predict or data_args.test_file is not None:
         if "test" not in raw_datasets:
             raise ValueError("--do_predict requires a test dataset")
         predict_dataset = raw_datasets["test"]
+        # remove label column if it exists
+        if data_args.max_predict_samples is not None:
+            max_predict_samples = min(len(predict_dataset), data_args.max_predict_samples)
+            predict_dataset = predict_dataset.select(range(max_predict_samples))
 
     # Log a few random samples from the training set:
     if training_args.do_train:

@@ -1,13 +1,12 @@
 #PBS -N biosift
 #PBS -l select=2:ncpus=24:ngpus=2:gpu_model=v100:mem=100gb,walltime=72:00:00
 #PBS -j oe
-#PBS -o output/supervised_run.log
+#PBS -o output/zero_shot_run.log
 
-cd $PBS_O_WORKDIR
 
 ### JOB PARAMS
-model_name="monologg/biobert_v1.1_pubmed"
-dataset="/scratch/taw2/biosift/dataset/hf_datasets/binary_dataset/"
+model_name=""
+dataset="/scratch/taw2/biosift/dataset/hf_datasets/nli_dataset/"
 ENV_NAME="/scratch/taw2/conda_envs/biosift_env"
 
 NGPUS=2
@@ -33,22 +32,22 @@ module add anaconda3/2022.05-gcc/9.5.0
 source activate $ENV_NAME
 
 # Get number of nodes. This will be the same as specified above.
-NNODES=$(cat $PBS_NODEFILE | wc -l)
+nnodes=$(cat $PBS_NODEFILE | wc -l)
 ncpus=$NCPUS
 
 export WANDB_PROJECT="biosift"
-export WANDB_JOB_NAME="supervised_${model_name//\//_}"
+export WANDB_JOB_NAME="zero_shot_${model_name//\//_}"
 
 pbsdsh -- bash "${PBS_O_WORKDIR}/run.sh" \
         $HOSTNAME \
         $ENV_NAME \
-        $NNODES \
-        $NGPUS \
-        "./src/run_supervised.py \
-                --model_name_or_path ${model_name} \
+        $nnodes \
+        $ngpus \
+        "./src/run_zero_shot.py \
+                --model_name_or_path  ${model_name} \
                 --dataset_name ${dataset} \
                 --shuffle_train_dataset \
-                --text_column_name Abstract \
+                --text_column_name "Abstract" \
                 --do_train \
                 --do_eval \
                 --do_predict \
@@ -56,8 +55,6 @@ pbsdsh -- bash "${PBS_O_WORKDIR}/run.sh" \
                 --per_device_train_batch_size 4 \
                 --learning_rate 2e-5 \
                 --num_train_epochs 5 \
-                --save_strategy epoch \
-                --evaluation_strategy epoch \
                 --load_best_model_at_end \
-                --output_dir ${output_dir}/" 
+                --output_dir $output_dir/" 
 
