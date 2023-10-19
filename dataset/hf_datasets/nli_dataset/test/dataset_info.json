@@ -21,6 +21,10 @@
     "Entailment": {
       "dtype": "float64",
       "_type": "Value"
+    },
+    "Positive": {
+      "dtype": "bool",
+      "_type": "Value"
     }
   },
   "homepage": "",

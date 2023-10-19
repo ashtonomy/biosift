@@ -85,7 +85,8 @@ def convert_to_nli(examples):
         "Title": [],
         "Abstract": [],
         "Hypothesis": [],
-        "Entailment": []
+        "Entailment": [],
+        "Positive": [] #positive or negative
     }
 
     for i in range(len(examples["PMID"])):
@@ -100,6 +101,7 @@ def convert_to_nli(examples):
                     entailment_label = examples[label_name][i]
                 else:
                     entailment_label = int(not examples[label_name][i])
+                new_examples["Positive"].append(hyp == "positive")   
                 new_examples["Entailment"].append(entailment_label)
 
     return new_examples
