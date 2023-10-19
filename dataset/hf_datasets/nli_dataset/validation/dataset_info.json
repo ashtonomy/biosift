@@ -25,6 +25,10 @@
     "Positive": {
       "dtype": "bool",
       "_type": "Value"
+    },
+    "Label_idx": {
+      "dtype": "int64",
+      "_type": "Value"
     }
   },
   "homepage": "",

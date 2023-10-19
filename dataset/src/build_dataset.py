@@ -22,31 +22,38 @@ DATASET_DIR=os.path.dirname(os.path.dirname(__file__))
 LABEL_HYPOTHESES = {
     "Cohort Study or Clinical Trial": {
         "positive": "This study has a cohort study or clinical trial", 
-        "negative": "This study does not have any cohorts or clinical trial"
+        "negative": "This study does not have any cohorts or clinical trial",
+        "label_idx": 3
     },
     "Has Comparator Group": {
         "positive": "This study has a control, double-blind, or comparison patient group",
-        "negative": "This study does not have any comparison patient group"
+        "negative": "This study does not have any comparison patient group",
+        "label_idx": 7
     },
     "Has Human Subjects": {
         "positive": "This study has human subjects",
-        "negative": "This study does not have human subjects"
+        "negative": "This study does not have human subjects",
+        "label_idx": 1
     },
     "Has Population Size": {
         "positive": "This study contains population size or sample size information",
-        "negative": "This study does not contain population size information"
+        "negative": "This study does not contain population size information",
+        "label_idx": 6
     },
     "Has Quantitative Outcome Measure": {
         "positive": "This study has quantitative outcomes like numbers, P-value, OR, CI, HR, RR, or patient ratios",
-        "negative": "This study does not have any quantitative outcomes"
+        "negative": "This study does not have any quantitative outcomes",
+        "label_idx": 4
     },
     "Has Study Drug(s)": {
         "positive": "This study has a target drug",
-        "negative": "This study does not have a target drug"
+        "negative": "This study does not have a target drug",
+        "label_idx": 5
     },
     "Has Target Disease": {
         "positive": "This study has a target disease",
-        "negative": "This study does not have a target disease"
+        "negative": "This study does not have a target disease",
+        "label_idx": 2
     }
 }
 
@@ -86,7 +93,8 @@ def convert_to_nli(examples):
         "Abstract": [],
         "Hypothesis": [],
         "Entailment": [],
-        "Positive": [] #positive or negative
+        "Positive": [], # Positive or negative
+        "Label_idx": [] # Index of class
     }
 
     for i in range(len(examples["PMID"])):
@@ -95,6 +103,7 @@ def convert_to_nli(examples):
                 new_examples["PMID"].append(examples["PMID"][i])
                 new_examples["Title"].append(examples["Title"][i])
                 new_examples["Abstract"].append(examples["Abstract"][i])
+                new_examples["Label_idx"].append(LABEL_HYPOTHESES[label_name]["label_idx"])
                 new_examples["Hypothesis"].append(LABEL_HYPOTHESES[label_name][hyp])
                 
                 if hyp == "positive":

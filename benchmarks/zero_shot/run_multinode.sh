@@ -47,17 +47,10 @@ pbsdsh -- bash "${PBS_O_WORKDIR}/run.sh" \
         "./src/run_zero_shot.py \
                 --model_name_or_path ${model_name} \
                 --dataset_name ${dataset} \
-                --shuffle_train_dataset \
-                --text_column_name Abstract \
-                --do_train \
-                --do_eval \
+                --premise_column_name Abstract \
+                --hypothesis_column_name Hypothesis
+                --compute_threshold \
                 --do_predict \
                 --max_seq_length 512 \
-                --per_device_train_batch_size 4 \
-                --learning_rate 2e-5 \
-                --num_train_epochs 5 \
-                --save_strategy epoch \
-                --evaluation_strategy epoch \
-                --load_best_model_at_end \
                 --output_dir ${output_dir}/" 
 
