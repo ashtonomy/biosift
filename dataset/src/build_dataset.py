@@ -129,8 +129,13 @@ def process_binary(
     logger.info("Processing binary dataset.")
     binary_df = pd.read_csv(binary_label_path)
     binary_data = pd.merge(abstract_df, binary_df, on="PMID")
-    binary_data["label"] = binary_data.iloc[:, 4:].astype('float64').values.tolist()
 
+    # Write label order for later verification, if necessary
+    with open(os.path.join(DATASET_DIR, "./labels.csv"), "w") as f:
+        f.write("\n".join(binary_data.columns[5:]))
+
+    binary_data["label"] = binary_data.iloc[:, 5:].astype('float64').values.tolist()
+    
     binary_dataset = {
         "train": Dataset.from_pandas(binary_data[binary_data["Split"] == "Train"]),
         "validation": Dataset.from_pandas(binary_data[binary_data["Split"] =="Validation"]),
@@ -155,7 +160,7 @@ def process_soft(
     logger.info("Processing soft dataset.")
     soft_df = pd.read_csv(soft_label_path)
     soft_data = pd.merge(abstract_df, soft_df, on="PMID")
-    soft_data["label"] = soft_data.iloc[:, 4:].astype('float64').values.tolist()
+    soft_data["label"] = soft_data.iloc[:, 5:].astype('float64').values.tolist()
 
     soft_dataset = {
         "train": Dataset.from_pandas(soft_data[soft_data["Split"] == "Train"]),
@@ -183,6 +188,7 @@ def process(
     binary = process_binary(abstract_df, binary_label_path, save_dir)
     _ = process_soft(abstract_df, soft_label_path, save_dir)
     _ = process_nli(binary, save_dir)
+    
 
 if __name__=='__main__':
     args = get_args()
