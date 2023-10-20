@@ -6,7 +6,7 @@
 cd $PBS_O_WORKDIR
 
 ### JOB PARAMS
-model_name="monologg/biobert_v1.1_pubmed"
+model_name=$MODEL_NAME
 dataset="/scratch/taw2/biosift/dataset/hf_datasets/binary_dataset/"
 ENV_NAME="/scratch/taw2/conda_envs/biosift_env"
 
@@ -39,8 +39,12 @@ export WANDB_PROJECT="biosift"
 export WANDB_LOG_MODEL=true
 export WANDB_JOB_NAME="supervised_hpo_${model_name//\//_}"
 
+# HPO search space loosely inspired by Liu & Wang 2021
+# https://aclanthology.org/2021.acl-long.178.pdf
+
 "./src/run_supervised_hpo.py \
         --model_name_or_path ${model_name} \
+        --ignore_mismatched_sizes \
         --dataset_name ${dataset} \
         --shuffle_train_dataset \
         --text_column_name Abstract \
@@ -48,11 +52,17 @@ export WANDB_JOB_NAME="supervised_hpo_${model_name//\//_}"
         --do_eval \
         --do_predict \
         --max_seq_length 512 \
-        --per_device_train_batch_size 4 \
-        --learning_rate 2e-5 \
+        --per_device_train_batch_size 8 \
+        --learning_rate 3e-5 \
         --num_train_epochs 5 \
         --save_strategy epoch \
         --evaluation_strategy epoch \
         --load_best_model_at_end \
-        --output_dir ${output_dir}/" 
+        --output_dir ${output_dir}/ \
+        --num_trials 10 \
+        --cpus_per_trial $(( $NCPUS / 2)) \
+        --gpus_per_trial 1 \
+        --max_weight_decay 0.3 \
+        --max_learing_rate 1.5e-4 \
+        --tuning_batch_sizes 8 16 32" 
 

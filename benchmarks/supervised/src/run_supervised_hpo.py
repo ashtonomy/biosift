@@ -222,7 +222,7 @@ class TuningArguments:
         metadata={"help": "Time attribute for perturbation interval population based training."},
     )
     perturbation_interval: int = field(
-        default=None, metadata={"help": "Perturbation interval for population based training."}
+        default=1, metadata={"help": "Perturbation interval for population based training."}
     )
     tune_metric: str = field(
         default="eval_loss",
@@ -594,7 +594,6 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
     else:
         metric_columns=["eval_loss", "eval_accuracy", "epoch", "training_iteration"]
 
-
     reporter = CLIReporter(
         parameter_columns={
             "weight_decay": "w_decay",
@@ -617,58 +616,41 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
         progress_reporter=reporter,
         local_dir=training_args.output_dir,
         name=model_args.model_name_or_path + "_supervised_pbt",
-        log_to_file=True,
+        log_to_file=True
     )
 
+    # FIXME: After first hpo run, append code to load best performing model and run prediction on test set
 
-    # Training
-    if training_args.do_train:
-        train_result = trainer.train()
-        metrics = train_result.metrics
-        metrics["train_samples"] = len(train_dataset)
-        trainer.save_model() 
-        trainer.log_metrics("train", metrics)
-        trainer.save_metrics("train", metrics)
-        trainer.save_state()
+    # if training_args.do_predict:
+    #     logger.info("*** Predict ***")
+    #     # Removing the `label` columns if exists because it might contains -1 and Trainer won't like that.
+    #     if "label" in predict_dataset.features:
+    #         predict_dataset = predict_dataset.remove_columns("label")
+    #     predictions = trainer.predict(predict_dataset, metric_key_prefix="predict").predictions
+    #     if is_multi_label:
+    #         predictions = np.array([np.where(p > 0.5, 1, 0) for p in predictions])
+    #     else:
+    #         predictions = np.argmax(predictions, axis=1)
+    #     output_predict_file = os.path.join(training_args.output_dir, "predict_results.txt")
+    #     if trainer.is_world_process_zero():
+    #         with open(output_predict_file, "w") as writer:
+    #             logger.info("***** Predict results *****")
+    #             writer.write("index\tprediction\n")
+    #             for index, item in enumerate(predictions):
+    #                 if is_multi_label:
+    #                     # recover from multi-hot encoding
+    #                     item = [label_list[i] for i in range(len(item)) if item[i] == 1]
+    #                     writer.write(f"{index}\t{item}\n")
+    #                 else:
+    #                     item = label_list[item]
+    #                     writer.write(f"{index}\t{item}\n")
+    #     logger.info("Predict results saved at {}".format(output_predict_file))
+    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "text-classification"}
 
-    # Evaluation
-    if training_args.do_eval:
-        logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(eval_dataset=eval_dataset)
-        metrics["eval_samples"] = len(eval_dataset)
-        trainer.log_metrics("eval", metrics)
-        trainer.save_metrics("eval", metrics)
-
-    if training_args.do_predict:
-        logger.info("*** Predict ***")
-        # Removing the `label` columns if exists because it might contains -1 and Trainer won't like that.
-        if "label" in predict_dataset.features:
-            predict_dataset = predict_dataset.remove_columns("label")
-        predictions = trainer.predict(predict_dataset, metric_key_prefix="predict").predictions
-        if is_multi_label:
-            predictions = np.array([np.where(p > 0.5, 1, 0) for p in predictions])
-        else:
-            predictions = np.argmax(predictions, axis=1)
-        output_predict_file = os.path.join(training_args.output_dir, "predict_results.txt")
-        if trainer.is_world_process_zero():
-            with open(output_predict_file, "w") as writer:
-                logger.info("***** Predict results *****")
-                writer.write("index\tprediction\n")
-                for index, item in enumerate(predictions):
-                    if is_multi_label:
-                        # recover from multi-hot encoding
-                        item = [label_list[i] for i in range(len(item)) if item[i] == 1]
-                        writer.write(f"{index}\t{item}\n")
-                    else:
-                        item = label_list[item]
-                        writer.write(f"{index}\t{item}\n")
-        logger.info("Predict results saved at {}".format(output_predict_file))
-    kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "text-classification"}
-
-    if training_args.push_to_hub:
-        trainer.push_to_hub(**kwargs)
-    else:
-        trainer.create_model_card(**kwargs)
+    # if training_args.push_to_hub:
+    #     trainer.push_to_hub(**kwargs)
+    # else:
+    #     trainer.create_model_card(**kwargs)
 
 if __name__ == "__main__":
     main()

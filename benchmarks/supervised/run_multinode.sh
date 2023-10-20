@@ -6,7 +6,7 @@
 cd $PBS_O_WORKDIR
 
 ### JOB PARAMS
-model_name="monologg/biobert_v1.1_pubmed"
+model_name=$
 dataset="/scratch/taw2/biosift/dataset/hf_datasets/binary_dataset/"
 ENV_NAME="/scratch/taw2/conda_envs/biosift_env"
 
