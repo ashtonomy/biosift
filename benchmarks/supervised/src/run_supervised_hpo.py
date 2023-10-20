@@ -8,6 +8,15 @@ import numpy as np
 from typing import List, Optional
 from dataclasses import dataclass, field
 
+import ray
+from ray import tune
+from ray.tune import CLIReporter
+from ray.tune.examples.pbt_transformers.utils import (
+    download_data,
+    build_compute_metrics_fn,
+)
+from ray.tune.schedulers import PopulationBasedTraining
+
 import evaluate
 
 import datasets
@@ -189,15 +198,64 @@ class ModelArguments:
         metadata={"help": "Will enable to load a pretrained model whose head dimensions are different."},
     )
 
+@dataclass
+class TuningArguments:
+    """
+    Arguments for raytune population based training.
+    """
+
+    num_trials: int = field(
+        default=10, metadata={"help": "Number of tune trials to run."}
+    )
+    cpus_per_trial: int = field(
+        default=None, metadata={"help": "Number of cpus to allocate to each trial."}
+    )
+    gpus_per_trial: Optional[int] = field(
+        default=None, metadata={"help": "Number of GPUs to allocate to each trial."}
+    )
+    smoke_test: bool = field(
+        default=False,
+        metadata={"help": "Whether this run is a smoke test or not."},
+    )
+    time_attr: str = field(
+        default="training_iteration",
+        metadata={"help": "Time attribute for perturbation interval population based training."},
+    )
+    perturbation_interval: int = field(
+        default=None, metadata={"help": "Perturbation interval for population based training."}
+    )
+    tune_metric: str = field(
+        default="eval_loss",
+        metadata={"help": "Metric to use for optimization."},
+    )
+    mode: str = field(
+        default="min",
+        metadata={"help": "Whether to maximize or minimize tune_metric."},
+    )
+    max_weight_decay: Optional[str] = field(
+        default=None,
+        metadata={"help": "Upper bound on uniform distribution for weight decay."},
+    )
+    max_learning_rate: Optional[str] = field(
+        default=None,
+        metadata={"help": "Upper bound on uniform distribution for learning rate."},
+    )
+    tuning_train_epochs: Optional[List[int]] = field(
+        default=None,
+        metadata={"help": "List of number of training epochs from which to choose."},
+    )
+    tuning_batch_sizes: Optional[List[int]] = field(
+        default=None,
+        metadata={"help": "Per device train batch sizes for tuning."},
+    )
+
 def main():
     # Parse command line arguments
-    hf_parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TrainingArguments))
+    hf_parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TuningArguments, TrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
-        # If we pass only one argument to the script and it's the path to a json file,
-        # let's parse it to get our arguments.
-        model_args, data_args, training_args = hf_parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
+        model_args, data_args, tuning_args, training_args = hf_parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
-        model_args, data_args, training_args = hf_parser.parse_args_into_dataclasses()
+        model_args, data_args, tuning_args, training_args = hf_parser.parse_args_into_dataclasses()
 
     # Setup logging
     logging.basicConfig(
@@ -223,6 +281,12 @@ def main():
         + f"distributed training: {training_args.parallel_mode.value == 'distributed'}, 16-bits training: {training_args.fp16}"
     )
     logger.info(f"Training/evaluation parameters {training_args}")
+    logger.info(f"Tuning parameters {tuning_args}")
+
+    train(model_args, data_args, tuning_args, training_args)
+
+
+def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, training_args: dataclass):
 
     # Set seed before initializing model.
     set_seed(training_args.seed)
@@ -232,7 +296,6 @@ def main():
             # Use load_from_disk if local
             raw_datasets = load_from_disk(data_args.dataset_name)
 
-        
         else:
             # Else load from hub
             raw_datasets = load_dataset(
@@ -331,17 +394,32 @@ def main():
         config.problem_type = "single_label_classification"
         logger.info("setting problem type to single label classification")
 
+        if training_args.do_train: 
+        label_to_id = {v: i for i, v in enumerate(label_list)}
+        # update config with label infos
+        config.label2id = label_to_id
+        config.id2label = {id: label for label, id in config.label2id.items()}
+    else:  # classification, but not training
+        logger.info("using label infos in the model config")
+        logger.info("label2id: {}".format(config.label2id))
+        label_to_id = config.label2id
+
+
     tokenizer = AutoTokenizer.from_pretrained(
         model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
         use_fast=model_args.use_fast_tokenizer,
     )
-    model = AutoModelForSequenceClassification.from_pretrained(
-        model_args.model_name_or_path,
-        config=config,
-        cache_dir=model_args.cache_dir,
-        ignore_mismatched_sizes=model_args.ignore_mismatched_sizes,
-    )
+
+    def model_init():
+        model = AutoModelForSequenceClassification.from_pretrained(
+            model_args.model_name_or_path,
+            config=config,
+            cache_dir=model_args.cache_dir,
+            ignore_mismatched_sizes=model_args.ignore_mismatched_sizes,
+        )
+
+        return model
 
     # Padding strategy
     if data_args.pad_to_max_length:
@@ -349,21 +427,6 @@ def main():
     else:
         # We will pad later, dynamically at batch creation, to the max sequence length in each batch
         padding = False
-
-    if training_args.do_train: 
-        label_to_id = {v: i for i, v in enumerate(label_list)}
-        # update config with label infos
-        if model.config.label2id != label_to_id:
-            logger.warning(
-                "The label2id key in the model config.json is not equal to the label2id key of this "
-                "run. You can ignore this if you are doing finetuning."
-            )
-        model.config.label2id = label_to_id
-        model.config.id2label = {id: label for label, id in config.label2id.items()}
-    else:  # classification, but not training
-        logger.info("using label infos in the model config")
-        logger.info("label2id: {}".format(model.config.label2id))
-        label_to_id = model.config.label2id
 
     if data_args.max_seq_length > tokenizer.model_max_length:
         logger.warning(
@@ -473,9 +536,17 @@ def main():
     else:
         data_collator = None
 
+    # create ray compatible datasets
+    if training_args.do_train:   
+        train_dataset = ray.data.from_huggingface(train_dataset)
+    if training_args.do_eval:
+        eval_dataset = ray.data.from_huggingface(eval_dataset)
+    if training_args.do_predict:
+        predict_dataset = ray.data.from_huggingface(predict_dataset)        
+
     # Initialize our Trainer
     trainer = Trainer(
-        model=model,
+        model_init=model_init,
         args=training_args,
         train_dataset=train_dataset if training_args.do_train else None,
         eval_dataset=eval_dataset if training_args.do_eval else None,
@@ -483,6 +554,72 @@ def main():
         tokenizer=tokenizer,
         data_collator=data_collator,
     )
+
+    tune_config = {
+        "per_device_train_batch_size": training_args.per_device_train_batch_size,
+        "per_device_eval_batch_size": training_args.per_device_eval_batch_size,
+        "num_train_epochs": (
+            tune.choice(tuning_args.tuning_train_epochs)
+            if tuning_args.tuning_train_epochs is not None
+            else None
+        )
+        "max_steps": 1 if tuning_args.smoke_test else -1,  # Used for smoke test.
+    }
+
+    hyperparamter_mutations = {}
+    if tuning_args.max_weight_decay is not None:
+        hyperparameter_mutations["weight_decay"] = (
+            tune.uniform(training_args.weight_decay, tuning_args.max_weight_decay)
+        )
+    if tuning_args.max_learning_rate is not None:
+        hyperparameter_mutations["learning_rate"] = (
+            tune.uniform(training_args.learning_rate, tuning_args.max_learning_rate)
+        )
+    if tuning_args.per_device_train_batch_sizes is not None:
+        hyperparameter_mutations["per_device_train_batch_size"] = (
+            tuning_args.per_device_train_batch_sizes
+        )
+
+    scheduler = PopulationBasedTraining(
+        time_attr=tuning_args.time_attr,
+        metric=tuning_args.tune_metric,
+        mode=tuning_args.mode,
+        perturbation_interval=tuning_args.perturbation_interval,
+        hyperparam_mutations=hyperparameter_mutations
+    )
+
+    if is_multi_label:
+        metric_columns=["eval_loss", "eval_f1_micro", "eval_prec_micro", 
+                        "eval_rec_micro", "epoch", "training_iteration"]
+    else:
+        metric_columns=["eval_loss", "eval_accuracy", "epoch", "training_iteration"]
+
+
+    reporter = CLIReporter(
+        parameter_columns={
+            "weight_decay": "w_decay",
+            "learning_rate": "lr",
+            "per_device_train_batch_size": "train_bs/device",
+            "num_train_epochs": "num_epochs",
+        },
+        metric_columns=metric_columns
+    )
+
+    trainer.hyperparameter_search(
+        hp_space=lambda _: tune_config,
+        backend="ray",
+        n_trials=tuning_args.num_trials,
+        resources_per_trial={"cpu": tuning_args.cpus_per_trial, 
+                             "gpu": tuning_args.gpus_per_trial},
+        scheduler=scheduler,
+        checkpoint_score_attr=tuning_args.time_attr,
+        stop={"training_iteration": 1} if tuning_args.smoke_test else None,
+        progress_reporter=reporter,
+        local_dir=training_args.output_dir,
+        name=model_args.model_name_or_path + "_supervised_pbt",
+        log_to_file=True,
+    )
+
 
     # Training
     if training_args.do_train:
