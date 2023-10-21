@@ -5,6 +5,7 @@ import os
 import typing
 import sys
 import numpy as np
+import pandas as pd
 from typing import List, Optional
 from dataclasses import dataclass, field
 
@@ -278,28 +279,6 @@ def main():
                 cache_dir=model_args.cache_dir
             )
 
-
-    if data_args.train_split_name is not None:
-        logger.info(f"using {data_args.validation_split_name} as validation set")
-        raw_datasets["train"] = raw_datasets[data_args.train_split_name]
-        raw_datasets.pop(data_args.train_split_name)
-
-    if data_args.validation_split_name is not None:
-        logger.info(f"using {data_args.validation_split_name} as validation set")
-        raw_datasets["validation"] = raw_datasets[data_args.validation_split_name]
-        raw_datasets.pop(data_args.validation_split_name)
-
-    if data_args.test_split_name is not None:
-        logger.info(f"using {data_args.test_split_name} as test set")
-        raw_datasets["test"] = raw_datasets[data_args.test_split_name]
-        raw_datasets.pop(data_args.test_split_name)
-
-    if data_args.remove_columns is not None:
-        for split in raw_datasets.keys():
-            for column in data_args.remove_columns.split(","):
-                logger.info(f"removing column {column} from split {split}")
-                raw_datasets[split].remove_columns(column)
-
     if data_args.label_column_name is not None and data_args.label_column_name != "label":
         for key in raw_datasets.keys():
             raw_datasets[key] = raw_datasets[key].rename_column(data_args.label_column_name, "label")
@@ -350,7 +329,7 @@ def main():
         # We will pad later, dynamically at batch creation, to the max sequence length in each batch
         padding = False
 
-    if training_args.do_train: 
+    if training_args.do_train:
         label_to_id = {v: i for i, v in enumerate(label_list)}
         # update config with label infos
         if model.config.label2id != label_to_id:
@@ -448,17 +427,13 @@ def main():
         if is_multi_label:
             preds = np.array([np.where(p > 0.5, 1, 0) for p in preds])
             result = {}
-            # result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="micro")["f1"]
-            # result["f1_macro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="macro")["f1"]
-            # result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["precision"]
-            # result["precision_macro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["precision"]
-            # result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["recall"]
-            # result["recall_macro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["recall"]
-            # result["combined_score"] = np.mean(list(result.values())).item()
-
-            result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average=None)["f1"]
-            result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average=None)["precision"]
-            result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average=None)["recall"]
+            result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="micro")["f1"]
+            result["f1_macro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="macro")["f1"]
+            result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["precision"]
+            result["precision_macro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["precision"]
+            result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["recall"]
+            result["recall_macro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["recall"]
+            result["combined_score"] = np.mean(list(result.values())).item()
 
         else:
             preds = np.argmax(preds, axis=1)
@@ -506,16 +481,29 @@ def main():
 
     if training_args.do_predict:
         logger.info("*** Predict ***")
-        # Removing the `label` columns if exists because it might contains -1 and Trainer won't like that.
         if "label" in predict_dataset.features:
+            labels = np.asarray(predict_dataset["label"])
             predict_dataset = predict_dataset.remove_columns("label")
         predictions = trainer.predict(predict_dataset, metric_key_prefix="predict").predictions
+        
         if is_multi_label:
             predictions = np.array([np.where(p > 0.5, 1, 0) for p in predictions])
         else:
             predictions = np.argmax(predictions, axis=1)
+        
         output_predict_file = os.path.join(training_args.output_dir, "predict_results.txt")
         if trainer.is_world_process_zero():
+            if "label" in predict_dataset.features:
+                # Compute metricsif "label" in predict_dataset.features:
+                result = {}
+                result["f1"] = f1_metric.compute(predictions=predictions, references=labels, average=None)["f1"]
+                result["precision"] = prec_metric.compute(predictions=predictions, references=labels, average=None)["precision"]
+                result["recall"] = rec_metric.compute(predictions=predictions, references=labels, average=None)["recall"]
+                result_df = pd.DataFrame.from_dict(result, orient='index', columns=LABEL_LIST)
+                
+                predict_metric_file = os.path.join(training_args.output_dir, "predict_metrics.csv")
+                result_df.to_csv(predict_metric_file)
+
             with open(output_predict_file, "w") as writer:
                 logger.info("***** Predict results *****")
                 writer.write("index\tprediction\n")

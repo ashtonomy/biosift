@@ -1,5 +1,5 @@
 #PBS -N biosift
-#PBS -l select=2:ncpus=24:ngpus=2:gpu_model=a100:mem=100gb,walltime=72:00:00
+#PBS -l select=2:ncpus=30:ngpus=2:gpu_model=a100:mem=200gb,walltime=72:00:00
 #PBS -j oe
 #PBS -o output/supervised_run.log
 
@@ -10,14 +10,27 @@ model_name=$MODEL_NAME
 dataset="/scratch/taw2/biosift/dataset/hf_datasets/binary_dataset/"
 ENV_NAME="/scratch/taw2/conda_envs/biosift_env"
 
-NGPUS=2
+NGPUS=2 # per node
 LAUNCH_SCRIPT="${PBS_O_WORKDIR}/run.sh"
+
+# Get optimal hyperparameters from raytune output
+# TUNE_DIR="/scratch/taw2/.cache/raytune/"
+# write_file="/scratch/taw2/biosift/benchmarks/supervised/output/hyperparameters/${model//\//_}.json"
+# TARGET_DIR="${TUNE_DIR}${model//\//_}_supervised_pbt"
+# find $TARGET_DIR -name ".wandb" -prune -o -type d | xargs -n 1 -I {} find {} -type f -name result.json | xargs cat | jq -s 'sort_by(.objective)' | jq '.[-1]' > $write_file
+
+
+# Get optimal hyperparameters from config
+hp_config="${PBS_O_WORKDIR}/output/hyperparameters/${model_name//\//_}.json"
+batch_size=$( cat $hp_config | jq .config.per_device_train_batch_size )
+weight_decay=$( cat $hp_config | jq .config.weight_decay )
+learning_rate=$( cat $hp_config | jq .config.learning_rate )
 
 # timestamp output directory name
 # and create directory.
 timestamp=$(date +%D_%H_%M_%S | tr / _)
 OUTPUT_DIR="${PBS_O_WORKDIR}/output/${model_name//\//_}_${timestamp}"
-mkdir -p $OUTPUT_DIR
+# mkdir -p $OUTPUT_DIR
 
 # Useful for distributed debugging
 export NCCL_DEBUG=INFO
@@ -35,6 +48,7 @@ source activate $ENV_NAME
 # Get number of nodes. This will be the same as specified above.
 NNODES=$(cat $PBS_NODEFILE | wc -l)
 ncpus=$NCPUS
+TOTAL_PROCS=$(( NNODES * NGPUS )) 
 
 export WANDB_PROJECT="biosift"
 export WANDB_JOB_NAME="supervised_${model_name//\//_}"
@@ -53,10 +67,12 @@ pbsdsh -- bash "${PBS_O_WORKDIR}/run.sh" \
                 --do_eval \
                 --do_predict \
                 --max_seq_length 512 \
-                --per_device_train_batch_size 4 \
-                --learning_rate 2e-5 \
+                --per_device_train_batch_size $(( $batch_size / $TOTAL_PROCS )) \
+                --learning_rate $learning_rate \
+                --weight_decay $weight_decay \
                 --num_train_epochs 5 \
-                --save_strategy epoch \
+                --save_total_limit 1 \
+		--save_strategy epoch \
                 --evaluation_strategy epoch \
                 --load_best_model_at_end \
                 --output_dir ${output_dir}/" 

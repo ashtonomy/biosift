@@ -216,20 +216,10 @@ def main():
         )
 
 
-    if training_args.do_eval:
-        if "validation" not in raw_datasets and "validation_matched" not in raw_datasets:
-            if "test" not in raw_datasets and "test_matched" not in raw_datasets:
-                raise ValueError("--do_eval requires a validation or test dataset if validation is not defined.")
-            else:
-                logger.warning("Validation dataset not found. Falling back to test dataset for validation.")
-                eval_dataset = raw_datasets["test"]
-        else:
-            eval_dataset = raw_datasets["validation"]
+    train_dataset = raw_datasets["train"]
+    eval_dataset = raw_datasets["validation"]
+    predict_dataset = raw_datasets["test"]
 
-    if training_args.do_predict or data_args.test_file is not None:
-        if "test" not in raw_datasets:
-            raise ValueError("--do_predict requires a test dataset")
-        predict_dataset = raw_datasets["test"]
 
     # Log a few random samples from the training set:
     if training_args.do_train:
@@ -274,15 +264,11 @@ def main():
         data_collator=data_collator,
     )
 
-    # Training
-    if training_args.do_train:
-        train_result = trainer.train()
-        metrics = train_result.metrics
-        metrics["train_samples"] = len(train_dataset)
-        trainer.save_model() 
-        trainer.log_metrics("train", metrics)
-        trainer.save_metrics("train", metrics)
-        trainer.save_state()
+    # train_dataset = train_dataset.remove_columns("label")
+    predictions = trainer.predict(predict_dataset, metric_key_prefix="predict").predictions
+    predictions = np.argmax(predictions, axis=1)
+
+
 
     # Evaluation
     if training_args.do_eval:
@@ -298,7 +284,7 @@ def main():
         if "label" in predict_dataset.features:
             predict_dataset = predict_dataset.remove_columns("label")
         predictions = trainer.predict(predict_dataset, metric_key_prefix="predict").predictions
-        predictions = np.argmax(predictions, axis=1)        
+        predictions = np.argmax(predictions, axis=1)
         
         output_predict_file = os.path.join(training_args.output_dir, "predict_results.txt")
         if trainer.is_world_process_zero():
@@ -306,7 +292,6 @@ def main():
                 logger.info("***** Predict results *****")
                 writer.write("index\tprediction\n")
                 for index, item in enumerate(predictions):
-                    item = label_list[item]
                     writer.write(f"{index}\t{item}\n")
         logger.info("Predict results saved at {}".format(output_predict_file))
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "text-classification"}
