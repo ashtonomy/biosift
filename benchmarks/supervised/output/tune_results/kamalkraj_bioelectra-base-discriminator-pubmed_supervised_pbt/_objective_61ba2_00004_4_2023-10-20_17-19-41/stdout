@@ -1,0 +1,18 @@
+:actor_name:_objective
+{'loss': 0.3049, 'learning_rate': 0.00010348332378752091, 'epoch': 0.5}
+{'loss': 0.2946, 'learning_rate': 9.199793823951636e-05, 'epoch': 1.0}
+{'eval_loss': 0.2726786434650421, 'eval_f1_micro': 0.9360932184989507, 'eval_f1_macro': 0.9240478825959602, 'eval_precision_micro': 0.9117439729310588, 'eval_precision_macro': 0.9017950909256405, 'eval_recall_micro': 0.9617787031528852, 'eval_recall_macro': 0.9512329397034385, 'eval_combined_score': 0.9311153013013223, 'eval_runtime': 10.9414, 'eval_samples_per_second': 91.122, 'eval_steps_per_second': 11.424, 'epoch': 1.0}
+:actor_name:_objective
+{'loss': 0.278, 'learning_rate': 8.051255269151182e-05, 'epoch': 1.5}
+{'loss': 0.2824, 'learning_rate': 6.902716714350729e-05, 'epoch': 2.0}
+{'eval_loss': 0.26632437109947205, 'eval_f1_micro': 0.9407160458037396, 'eval_f1_macro': 0.9286807832437989, 'eval_precision_micro': 0.9174441617189709, 'eval_precision_macro': 0.9057056506575678, 'eval_recall_micro': 0.9651992861392028, 'eval_recall_macro': 0.9539706096744869, 'eval_combined_score': 0.9352860895396279, 'eval_runtime': 10.9945, 'eval_samples_per_second': 90.682, 'eval_steps_per_second': 11.369, 'epoch': 2.0}
+:actor_name:_objective
+{'loss': 0.1757, 'learning_rate': 2.4384006556056447e-05, 'epoch': 2.5}
+{'loss': 0.1694, 'learning_rate': 1.9516939379198872e-05, 'epoch': 3.0}
+{'eval_loss': 0.1993708461523056, 'eval_f1_micro': 0.9524232334443211, 'eval_f1_macro': 0.9388129480941306, 'eval_precision_micro': 0.9477249300544839, 'eval_precision_macro': 0.9378418987651669, 'eval_recall_micro': 0.9571683521713266, 'eval_recall_macro': 0.941443298903048, 'eval_combined_score': 0.9459024435720794, 'eval_runtime': 10.9745, 'eval_samples_per_second': 90.847, 'eval_steps_per_second': 11.39, 'epoch': 3.0}
+:actor_name:_objective
+{'loss': 0.1411, 'learning_rate': 1.4649872202341297e-05, 'epoch': 3.5}
+{'loss': 0.1342, 'learning_rate': 9.782805025483724e-06, 'epoch': 4.0}
+{'eval_loss': 0.21364644169807434, 'eval_f1_micro': 0.9530290701974999, 'eval_f1_macro': 0.9398994032211303, 'eval_precision_micro': 0.9480500367917587, 'eval_precision_macro': 0.9385877414695247, 'eval_recall_micro': 0.9580606781677573, 'eval_recall_macro': 0.9427964468020044, 'eval_combined_score': 0.9467372294416125, 'eval_runtime': 10.9203, 'eval_samples_per_second': 91.298, 'eval_steps_per_second': 11.447, 'epoch': 4.0}
+:actor_name:_objective
+{'train_runtime': 6.6892, 'train_samples_per_second': 5983.556, 'train_steps_per_second': 187.617, 'train_loss': 0.0, 'epoch': 5.0}

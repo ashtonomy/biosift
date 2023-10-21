@@ -1,0 +1,219 @@
+2023-10-20 22:32:07,452 INFO    StreamThr :1006879 [internal.py:wandb_internal():86] W&B internal server running at pid: 1006879, started at: 2023-10-20 22:32:07.450643
+2023-10-20 22:32:07,453 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status
+2023-10-20 22:32:07,454 INFO    WriterThread:1006879 [datastore.py:open_for_write():85] open: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/run-ubuko5kj.wandb
+2023-10-20 22:32:07,456 DEBUG   SenderThread:1006879 [sender.py:send():380] send: header
+2023-10-20 22:32:07,466 DEBUG   SenderThread:1006879 [sender.py:send():380] send: run
+2023-10-20 22:32:07,661 INFO    SenderThread:1006879 [dir_watcher.py:__init__():211] watching files in: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files
+2023-10-20 22:32:07,661 INFO    SenderThread:1006879 [sender.py:_start_run_threads():1122] run started: ubuko5kj with start time 1697855527.452039
+2023-10-20 22:32:07,666 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: check_version
+2023-10-20 22:32:07,666 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: check_version
+2023-10-20 22:32:07,765 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: run_start
+2023-10-20 22:32:07,768 DEBUG   HandlerThread:1006879 [system_info.py:__init__():32] System info init
+2023-10-20 22:32:07,768 DEBUG   HandlerThread:1006879 [system_info.py:__init__():47] System info init done
+2023-10-20 22:32:07,768 INFO    HandlerThread:1006879 [system_monitor.py:start():194] Starting system monitor
+2023-10-20 22:32:07,768 INFO    SystemMonitor:1006879 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2023-10-20 22:32:07,768 INFO    HandlerThread:1006879 [system_monitor.py:probe():214] Collecting system info
+2023-10-20 22:32:07,769 INFO    SystemMonitor:1006879 [interfaces.py:start():190] Started cpu monitoring
+2023-10-20 22:32:07,769 INFO    SystemMonitor:1006879 [interfaces.py:start():190] Started disk monitoring
+2023-10-20 22:32:07,769 INFO    SystemMonitor:1006879 [interfaces.py:start():190] Started gpu monitoring
+2023-10-20 22:32:07,770 INFO    SystemMonitor:1006879 [interfaces.py:start():190] Started memory monitoring
+2023-10-20 22:32:07,770 INFO    SystemMonitor:1006879 [interfaces.py:start():190] Started network monitoring
+2023-10-20 22:32:07,802 DEBUG   HandlerThread:1006879 [system_info.py:probe():196] Probing system
+2023-10-20 22:32:07,805 DEBUG   HandlerThread:1006879 [system_info.py:_probe_git():181] Probing git
+2023-10-20 22:32:07,820 DEBUG   HandlerThread:1006879 [system_info.py:_probe_git():189] Probing git done
+2023-10-20 22:32:07,820 DEBUG   HandlerThread:1006879 [system_info.py:probe():244] Probing system done
+2023-10-20 22:32:07,820 DEBUG   HandlerThread:1006879 [system_monitor.py:probe():223] {'os': 'Linux-4.18.0-372.32.1.el8_6.x86_64-x86_64-with-glibc2.28', 'python': '3.11.5', 'heartbeatAt': '2023-10-21T02:32:07.802423', 'startedAt': '2023-10-21T02:32:07.416852', 'docker': None, 'cuda': None, 'args': ('--model_name_or_path', 'raynardj/ner-gene-dna-rna-jnlpba-pubmed', '--dataset_name', '/scratch/taw2/biosift/dataset/hf_datasets/binary_dataset/', '--shuffle_train_dataset', '--text_column_name', 'Abstract', '--do_train', '--do_eval', '--do_predict', '--max_seq_length', '512', '--per_device_train_batch_size', '4', '--learning_rate', '2e-5', '--num_train_epochs', '5', '--save_strategy', 'epoch', '--evaluation_strategy', 'epoch', '--load_best_model_at_end', '--output_dir', '/'), 'state': 'running', 'program': '/scratch/taw2/biosift/benchmarks/supervised/./src/run_supervised.py', 'codePathLocal': 'src/run_supervised.py', 'codePath': 'benchmarks/supervised/src/run_supervised.py', 'git': {'remote': 'https://ashtonomy:@github.com/ashtonomy/biosift.git', 'commit': '017de63173ecfd515ac10b37db3246d6d6688309'}, 'email': 'taw2@clemson.edu', 'root': '/scratch/taw2/biosift', 'host': 'node0393.palmetto.clemson.edu', 'username': 'taw2', 'executable': '/scratch/taw2/conda_envs/biosift_env/bin/python', 'cpu_count': 64, 'cpu_count_logical': 64, 'cpu_freq': {'current': 3399.703125, 'min': 3400.0, 'max': 3400.0}, 'cpu_freq_per_core': [{'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3381.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}, {'current': 3400.0, 'min': 3400.0, 'max': 3400.0}], 'disk': {'/': {'total': 49.9755859375, 'used': 11.94076156616211}}, 'gpu': 'NVIDIA A100 80GB PCIe', 'gpu_count': 2, 'gpu_devices': [{'name': 'NVIDIA A100 80GB PCIe', 'memory_total': 85899345920}, {'name': 'NVIDIA A100 80GB PCIe', 'memory_total': 85899345920}], 'memory': {'total': 250.88043212890625}}
+2023-10-20 22:32:07,820 INFO    HandlerThread:1006879 [system_monitor.py:probe():224] Finished collecting system info
+2023-10-20 22:32:07,820 INFO    HandlerThread:1006879 [system_monitor.py:probe():227] Publishing system info
+2023-10-20 22:32:07,820 DEBUG   HandlerThread:1006879 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-10-20 22:32:07,823 DEBUG   HandlerThread:1006879 [system_info.py:_save_pip():68] Saving pip packages done
+2023-10-20 22:32:07,823 DEBUG   HandlerThread:1006879 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-10-20 22:32:08,662 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_created():271] file/dir created: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/conda-environment.yaml
+2023-10-20 22:32:08,662 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_created():271] file/dir created: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/requirements.txt
+2023-10-20 22:32:11,582 DEBUG   HandlerThread:1006879 [system_info.py:_save_conda():87] Saving conda packages done
+2023-10-20 22:32:11,586 INFO    HandlerThread:1006879 [system_monitor.py:probe():229] Finished publishing system info
+2023-10-20 22:32:11,589 DEBUG   SenderThread:1006879 [sender.py:send():380] send: files
+2023-10-20 22:32:11,589 INFO    SenderThread:1006879 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-10-20 22:32:11,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 22:32:11,595 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 22:32:11,596 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 22:32:11,664 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/conda-environment.yaml
+2023-10-20 22:32:11,664 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_created():271] file/dir created: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/wandb-metadata.json
+2023-10-20 22:32:11,686 DEBUG   SenderThread:1006879 [sender.py:send():380] send: telemetry
+2023-10-20 22:32:11,686 DEBUG   SenderThread:1006879 [sender.py:send():380] send: config
+2023-10-20 22:32:11,686 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:32:11,686 DEBUG   SenderThread:1006879 [sender.py:send():380] send: telemetry
+2023-10-20 22:32:11,686 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:32:11,686 WARNING SenderThread:1006879 [sender.py:send_metric():1329] Seen metric with glob (shouldn't happen)
+2023-10-20 22:32:11,901 INFO    wandb-upload_0:1006879 [upload_job.py:push():131] Uploaded file /local_scratch/pbs.1428971.pbs02/tmpc0491bhowandb/ie3bvk7l-wandb-metadata.json
+2023-10-20 22:32:12,665 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_created():271] file/dir created: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:12,689 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:14,667 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:16,670 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:17,689 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:18,681 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:20,684 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:22,694 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:22,814 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:23,695 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:25,700 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:26,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 22:32:26,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 22:32:26,595 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 22:32:27,702 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:27,922 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:29,706 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:31,717 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:33,020 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:33,726 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:35,732 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:37,735 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:38,121 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:38,735 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/config.yaml
+2023-10-20 22:32:39,737 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:41,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 22:32:41,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 22:32:41,595 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 22:32:41,746 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:43,374 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:43,749 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:45,751 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:47,754 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:48,468 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:49,756 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:51,759 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:53,576 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:53,762 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:55,764 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:56,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 22:32:56,595 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 22:32:56,595 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 22:32:57,774 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:32:58,677 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:32:59,776 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:01,778 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:03,789 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:03,789 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:05,799 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:07,770 DEBUG   SystemMonitor:1006879 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2023-10-20 22:33:07,771 DEBUG   SenderThread:1006879 [sender.py:send():380] send: stats
+2023-10-20 22:33:07,801 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:08,897 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:09,807 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:11,596 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 22:33:11,596 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 22:33:11,596 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 22:33:11,810 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:13,812 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:14,003 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:15,814 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:17,817 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:19,110 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:19,820 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:21,822 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:23,826 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:24,217 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:25,836 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:26,596 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 22:33:26,596 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 22:33:26,596 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 22:33:27,838 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:27,979 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: partial_history
+2023-10-20 22:33:27,980 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:27,980 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:27,980 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:27,980 DEBUG   SenderThread:1006879 [sender.py:send():380] send: history
+2023-10-20 22:33:27,980 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: summary_record
+2023-10-20 22:33:27,995 INFO    SenderThread:1006879 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-10-20 22:33:28,840 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_created():271] file/dir created: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/wandb-summary.json
+2023-10-20 22:33:29,304 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:29,841 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:30,308 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: partial_history
+2023-10-20 22:33:30,309 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,309 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,309 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,309 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,309 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,310 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,310 DEBUG   SenderThread:1006879 [sender.py:send():380] send: metric
+2023-10-20 22:33:30,310 DEBUG   SenderThread:1006879 [sender.py:send():380] send: history
+2023-10-20 22:33:30,310 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: summary_record
+2023-10-20 22:33:30,315 INFO    SenderThread:1006879 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-10-20 22:33:30,479 DEBUG   SenderThread:1006879 [sender.py:send():380] send: exit
+2023-10-20 22:33:30,479 INFO    SenderThread:1006879 [sender.py:send_exit():585] handling exit code: 1
+2023-10-20 22:33:30,479 INFO    SenderThread:1006879 [sender.py:send_exit():587] handling runtime: 82
+2023-10-20 22:33:30,483 INFO    SenderThread:1006879 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-10-20 22:33:30,483 INFO    SenderThread:1006879 [sender.py:send_exit():593] send defer
+2023-10-20 22:33:30,483 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,483 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 0
+2023-10-20 22:33:30,484 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,484 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 0
+2023-10-20 22:33:30,484 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 1
+2023-10-20 22:33:30,484 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,484 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 1
+2023-10-20 22:33:30,484 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,484 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 1
+2023-10-20 22:33:30,484 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 2
+2023-10-20 22:33:30,484 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,484 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 2
+2023-10-20 22:33:30,484 INFO    HandlerThread:1006879 [system_monitor.py:finish():203] Stopping system monitor
+2023-10-20 22:33:30,484 DEBUG   SystemMonitor:1006879 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2023-10-20 22:33:30,484 DEBUG   SystemMonitor:1006879 [system_monitor.py:_start():183] Publishing last batch of metrics
+2023-10-20 22:33:30,484 INFO    HandlerThread:1006879 [interfaces.py:finish():202] Joined cpu monitor
+2023-10-20 22:33:30,485 INFO    HandlerThread:1006879 [interfaces.py:finish():202] Joined disk monitor
+2023-10-20 22:33:30,599 INFO    HandlerThread:1006879 [interfaces.py:finish():202] Joined gpu monitor
+2023-10-20 22:33:30,599 INFO    HandlerThread:1006879 [interfaces.py:finish():202] Joined memory monitor
+2023-10-20 22:33:30,599 INFO    HandlerThread:1006879 [interfaces.py:finish():202] Joined network monitor
+2023-10-20 22:33:30,600 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,600 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 2
+2023-10-20 22:33:30,600 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 3
+2023-10-20 22:33:30,600 DEBUG   SenderThread:1006879 [sender.py:send():380] send: stats
+2023-10-20 22:33:30,601 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,601 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 3
+2023-10-20 22:33:30,602 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,602 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 3
+2023-10-20 22:33:30,602 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 4
+2023-10-20 22:33:30,602 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,602 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 4
+2023-10-20 22:33:30,602 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,602 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 4
+2023-10-20 22:33:30,602 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 5
+2023-10-20 22:33:30,602 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,602 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 5
+2023-10-20 22:33:30,602 DEBUG   SenderThread:1006879 [sender.py:send():380] send: summary
+2023-10-20 22:33:30,605 INFO    SenderThread:1006879 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-10-20 22:33:30,606 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,606 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 5
+2023-10-20 22:33:30,606 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 6
+2023-10-20 22:33:30,606 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,606 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 6
+2023-10-20 22:33:30,606 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,606 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 6
+2023-10-20 22:33:30,611 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 22:33:30,724 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 7
+2023-10-20 22:33:30,724 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:30,725 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 7
+2023-10-20 22:33:30,725 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:30,725 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 7
+2023-10-20 22:33:30,844 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:30,844 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/config.yaml
+2023-10-20 22:33:30,844 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/wandb-summary.json
+2023-10-20 22:33:31,479 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: poll_exit
+2023-10-20 22:33:31,845 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log
+2023-10-20 22:33:32,000 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 8
+2023-10-20 22:33:32,000 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: poll_exit
+2023-10-20 22:33:32,000 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:32,001 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 8
+2023-10-20 22:33:32,001 DEBUG   SenderThread:1006879 [sender.py:send_request():407] send_request: defer
+2023-10-20 22:33:32,001 INFO    SenderThread:1006879 [sender.py:send_request_defer():609] handle sender defer: 8
+2023-10-20 22:33:32,001 INFO    SenderThread:1006879 [job_builder.py:build():281] Attempting to build job artifact
+2023-10-20 22:33:32,002 INFO    SenderThread:1006879 [job_builder.py:_get_source_type():393] is repo sourced job
+2023-10-20 22:33:32,003 INFO    SenderThread:1006879 [job_builder.py:build():369] adding wandb-job metadata file
+2023-10-20 22:33:32,008 INFO    SenderThread:1006879 [sender.py:transition_state():613] send defer: 9
+2023-10-20 22:33:32,008 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: defer
+2023-10-20 22:33:32,008 INFO    HandlerThread:1006879 [handler.py:handle_request_defer():172] handle defer: 9
+2023-10-20 22:33:32,009 DEBUG   SenderThread:1006879 [sender.py:send():380] send: artifact
+2023-10-20 22:33:32,479 DEBUG   HandlerThread:1006879 [handler.py:handle_request():146] handle_request: poll_exit
+2023-10-20 22:33:32,520 INFO    wandb-upload_0:1006879 [upload_job.py:push():86] Skipped uploading /home/taw2/.local/share/wandb/artifacts/staging/tmptw9euc9n
+2023-10-20 22:33:32,733 INFO    wandb-upload_1:1006879 [upload_job.py:push():89] Uploaded file /home/taw2/.local/share/wandb/artifacts/staging/tmpdufz0z9b
+2023-10-20 22:33:32,846 INFO    Thread-12 :1006879 [dir_watcher.py:_on_file_modified():288] file/dir modified: /scratch/taw2/biosift/benchmarks/supervised/wandb/run-20231020_223207-ubuko5kj/files/output.log

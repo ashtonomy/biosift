@@ -1,0 +1,16 @@
+:actor_name:_objective
+{'loss': 0.2678, 'learning_rate': 4.681288272263063e-05, 'epoch': 0.5}
+{'loss': 0.2209, 'learning_rate': 4.161722426284921e-05, 'epoch': 1.0}
+{'eval_loss': 0.2058776468038559, 'eval_f1_micro': 0.9521524141942991, 'eval_f1_macro': 0.9426263425913194, 'eval_precision_micro': 0.9315594763801935, 'eval_precision_macro': 0.9212797766691001, 'eval_recall_micro': 0.9736763831052945, 'eval_recall_macro': 0.9662851464334548, 'eval_combined_score': 0.9479299232289434, 'eval_runtime': 15.1793, 'eval_samples_per_second': 65.681, 'eval_steps_per_second': 8.235, 'epoch': 1.0}
+:actor_name:_objective
+{'loss': 0.1902, 'learning_rate': 3.6421565803067785e-05, 'epoch': 1.5}
+{'loss': 0.1836, 'learning_rate': 3.122590734328636e-05, 'epoch': 2.0}
+{'eval_loss': 0.1988351047039032, 'eval_f1_micro': 0.950272938009422, 'eval_f1_macro': 0.9284749050796135, 'eval_precision_micro': 0.9556324259287111, 'eval_precision_macro': 0.9522221747748343, 'eval_recall_micro': 0.944973230220107, 'eval_recall_macro': 0.9218077032202077, 'eval_combined_score': 0.9422305628721492, 'eval_runtime': 14.7797, 'eval_samples_per_second': 67.457, 'eval_steps_per_second': 8.458, 'epoch': 2.0}
+:actor_name:_objective
+{'loss': 0.1581, 'learning_rate': 2.6030248883504937e-05, 'epoch': 2.5}
+{'loss': 0.1582, 'learning_rate': 2.083459042372351e-05, 'epoch': 3.0}
+{'eval_loss': 0.19376173615455627, 'eval_f1_micro': 0.9525009262689885, 'eval_f1_macro': 0.94035604663444, 'eval_precision_micro': 0.9491950967360804, 'eval_precision_macro': 0.9380818623153935, 'eval_recall_micro': 0.9558298631766805, 'eval_recall_macro': 0.9430714506317489, 'eval_combined_score': 0.9465058742938887, 'eval_runtime': 14.8709, 'eval_samples_per_second': 67.044, 'eval_steps_per_second': 8.406, 'epoch': 3.0}
+:actor_name:_objective
+{'loss': 0.1295, 'learning_rate': 1.5638931963942086e-05, 'epoch': 3.5}
+{'loss': 0.1286, 'learning_rate': 1.0443273504160663e-05, 'epoch': 4.0}
+{'eval_loss': 0.2077459841966629, 'eval_f1_micro': 0.9522050675925242, 'eval_f1_macro': 0.9395790741822606, 'eval_precision_micro': 0.945985615734625, 'eval_precision_macro': 0.93426319512081, 'eval_recall_micro': 0.9585068411659726, 'eval_recall_macro': 0.9454146412865961, 'eval_combined_score': 0.9459924058471313, 'eval_runtime': 15.1037, 'eval_samples_per_second': 66.01, 'eval_steps_per_second': 8.276, 'epoch': 4.0}

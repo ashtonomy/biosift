@@ -448,20 +448,22 @@ def main():
         if is_multi_label:
             preds = np.array([np.where(p > 0.5, 1, 0) for p in preds])
             result = {}
-            result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="micro")["f1"]
-            result["f1_macro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="macro")["f1"]
-            result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["precision"]
-            result["precision_macro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["precision"]
-            result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["recall"]
-            result["recall_macro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["recall"]
+            # result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="micro")["f1"]
+            # result["f1_macro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="macro")["f1"]
+            # result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["precision"]
+            # result["precision_macro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["precision"]
+            # result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["recall"]
+            # result["recall_macro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["recall"]
+            # result["combined_score"] = np.mean(list(result.values())).item()
+
+            result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average=None)["f1"]
+            result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average=None)["precision"]
+            result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average=None)["recall"]
 
         else:
             preds = np.argmax(preds, axis=1)
             result = metric.compute(predictions=preds, references=p.label_ids)
-        
-        if len(result) > 1:
-            result["combined_score"] = np.mean(list(result.values())).item()
-                
+                        
         return result
 
     # Data collator will default to DataCollatorWithPadding when the tokenizer is passed to Trainer, so we change it if
@@ -489,7 +491,7 @@ def main():
         train_result = trainer.train()
         metrics = train_result.metrics
         metrics["train_samples"] = len(train_dataset)
-        trainer.save_model() 
+        trainer.save_model()
         trainer.log_metrics("train", metrics)
         trainer.save_metrics("train", metrics)
         trainer.save_state()

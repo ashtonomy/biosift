@@ -232,11 +232,11 @@ class TuningArguments:
         default="min",
         metadata={"help": "Whether to maximize or minimize tune_metric."},
     )
-    max_weight_decay: Optional[str] = field(
+    max_weight_decay: Optional[float] = field(
         default=None,
         metadata={"help": "Upper bound on uniform distribution for weight decay."},
     )
-    max_learning_rate: Optional[str] = field(
+    max_learning_rate: Optional[float] = field(
         default=None,
         metadata={"help": "Upper bound on uniform distribution for learning rate."},
     )
@@ -250,6 +250,12 @@ class TuningArguments:
     )
 
 def main():
+    """Main driver
+    Parse args into dataclasses and set up logging,
+    then hand off to train for hpo 
+    """
+
+
     # Parse command line arguments
     hf_parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TuningArguments, TrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
@@ -394,7 +400,7 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
         config.problem_type = "single_label_classification"
         logger.info("setting problem type to single label classification")
 
-        if training_args.do_train: 
+    if training_args.do_train: 
         label_to_id = {v: i for i, v in enumerate(label_list)}
         # update config with label infos
         config.label2id = label_to_id
@@ -511,12 +517,24 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
         if is_multi_label:
             preds = np.array([np.where(p > 0.5, 1, 0) for p in preds])
             result = {}
-            result["f1_micro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="micro")["f1"]
-            result["f1_macro"] = f1_metric.compute(predictions=preds, references=p.label_ids, average="macro")["f1"]
-            result["precision_micro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["precision"]
-            result["precision_macro"] = prec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["precision"]
-            result["recall_micro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="micro")["recall"]
-            result["recall_macro"] = rec_metric.compute(predictions=preds, references=p.label_ids, average="macro")["recall"]
+            result["f1_micro"] = f1_metric.compute(predictions=preds,
+                                                   references=p.label_ids,
+                                                   average="micro")["f1"]
+            result["f1_macro"] = f1_metric.compute(predictions=preds,
+                                                   references=p.label_ids,
+                                                   average="macro")["f1"]
+            result["precision_micro"] = prec_metric.compute(predictions=preds,
+                                                            references=p.label_ids,
+                                                            average="micro")["precision"]
+            result["precision_macro"] = prec_metric.compute(predictions=preds,
+                                                            references=p.label_ids,
+                                                            average="macro")["precision"]
+            result["recall_micro"] = rec_metric.compute(predictions=preds, 
+                                                        references=p.label_ids, 
+                                                        average="micro")["recall"]
+            result["recall_macro"] = rec_metric.compute(predictions=preds, 
+                                                        references=p.label_ids, 
+                                                        average="macro")["recall"]
 
         else:
             preds = np.argmax(preds, axis=1)
@@ -527,8 +545,8 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
                 
         return result
 
-    # Data collator will default to DataCollatorWithPadding when the tokenizer is passed to Trainer, so we change it if
-    # we already did the padding.
+    # Data collator will default to DataCollatorWithPadding when the tokenizer is 
+    # passed to Trainer, so we change it if we already did the padding.
     if data_args.pad_to_max_length:
         data_collator = default_data_collator
     elif training_args.fp16:
@@ -536,13 +554,15 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
     else:
         data_collator = None
 
-    # create ray compatible datasets
-    if training_args.do_train:   
-        train_dataset = ray.data.from_huggingface(train_dataset)
-    if training_args.do_eval:
-        eval_dataset = ray.data.from_huggingface(eval_dataset)
-    if training_args.do_predict:
-        predict_dataset = ray.data.from_huggingface(predict_dataset)        
+    # FIXME: This may be deprecated. Throwing ds.count() error. 
+    # Apparently ray datasets arent written in torch under the hood
+
+    # if training_args.do_train:
+    #     train_dataset = ray.data.from_huggingface(train_dataset)
+    # if training_args.do_eval:
+    #     eval_dataset = ray.data.from_huggingface(eval_dataset)
+    # if training_args.do_predict:
+    #     predict_dataset = ray.data.from_huggingface(predict_dataset)        
 
     # Initialize our Trainer
     trainer = Trainer(
@@ -561,12 +581,12 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
         "num_train_epochs": (
             tune.choice(tuning_args.tuning_train_epochs)
             if tuning_args.tuning_train_epochs is not None
-            else None
-        )
-        "max_steps": 1 if tuning_args.smoke_test else -1,  # Used for smoke test.
+            else training_args.num_train_epochs
+        ),
+        "max_steps": 1 if tuning_args.smoke_test else -1  # Used for smoke test.
     }
 
-    hyperparamter_mutations = {}
+    hyperparameter_mutations = {}
     if tuning_args.max_weight_decay is not None:
         hyperparameter_mutations["weight_decay"] = (
             tune.uniform(training_args.weight_decay, tuning_args.max_weight_decay)
@@ -575,9 +595,9 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
         hyperparameter_mutations["learning_rate"] = (
             tune.uniform(training_args.learning_rate, tuning_args.max_learning_rate)
         )
-    if tuning_args.per_device_train_batch_sizes is not None:
+    if tuning_args.tuning_batch_sizes is not None:
         hyperparameter_mutations["per_device_train_batch_size"] = (
-            tuning_args.per_device_train_batch_sizes
+            tuning_args.tuning_batch_sizes
         )
 
     scheduler = PopulationBasedTraining(
@@ -608,49 +628,17 @@ def train(model_args: dataclass, data_args: dataclass, tuning_args: dataclass, t
         hp_space=lambda _: tune_config,
         backend="ray",
         n_trials=tuning_args.num_trials,
-        resources_per_trial={"cpu": tuning_args.cpus_per_trial, 
+        resources_per_trial={"cpu": tuning_args.cpus_per_trial,
                              "gpu": tuning_args.gpus_per_trial},
         scheduler=scheduler,
         checkpoint_score_attr=tuning_args.time_attr,
         stop={"training_iteration": 1} if tuning_args.smoke_test else None,
         progress_reporter=reporter,
-        local_dir=training_args.output_dir,
-        name=model_args.model_name_or_path + "_supervised_pbt",
+        keep_checkpoints_num=1,
+        # local_dir=training_args.output_dir,
+        name=model_args.model_name_or_path.replace("/", "_") + "_supervised_pbt",
         log_to_file=True
     )
-
-    # FIXME: After first hpo run, append code to load best performing model and run prediction on test set
-
-    # if training_args.do_predict:
-    #     logger.info("*** Predict ***")
-    #     # Removing the `label` columns if exists because it might contains -1 and Trainer won't like that.
-    #     if "label" in predict_dataset.features:
-    #         predict_dataset = predict_dataset.remove_columns("label")
-    #     predictions = trainer.predict(predict_dataset, metric_key_prefix="predict").predictions
-    #     if is_multi_label:
-    #         predictions = np.array([np.where(p > 0.5, 1, 0) for p in predictions])
-    #     else:
-    #         predictions = np.argmax(predictions, axis=1)
-    #     output_predict_file = os.path.join(training_args.output_dir, "predict_results.txt")
-    #     if trainer.is_world_process_zero():
-    #         with open(output_predict_file, "w") as writer:
-    #             logger.info("***** Predict results *****")
-    #             writer.write("index\tprediction\n")
-    #             for index, item in enumerate(predictions):
-    #                 if is_multi_label:
-    #                     # recover from multi-hot encoding
-    #                     item = [label_list[i] for i in range(len(item)) if item[i] == 1]
-    #                     writer.write(f"{index}\t{item}\n")
-    #                 else:
-    #                     item = label_list[item]
-    #                     writer.write(f"{index}\t{item}\n")
-    #     logger.info("Predict results saved at {}".format(output_predict_file))
-    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "text-classification"}
-
-    # if training_args.push_to_hub:
-    #     trainer.push_to_hub(**kwargs)
-    # else:
-    #     trainer.create_model_card(**kwargs)
 
 if __name__ == "__main__":
     main()

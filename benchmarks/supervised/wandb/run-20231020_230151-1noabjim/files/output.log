@@ -1,0 +1,65 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 20%|██        | 501/2505 [01:13<04:44,  7.04it/s][INFO|trainer.py:761] 2023-10-20 23:03:09,857 >> The following columns in the evaluation set don't have a corresponding argument in `BertForSequenceClassification.forward` and have been ignored: Aggregate, PMID, Has Target Disease, sentence, Has Study Drug(s), __index_level_0__, Has Comparator Group, Number of Annotators, Abstract, Has Quantitative Outcome Measure, Has Human Subjects, Title, Has Population Size, Cohort Study or Clinical Trial, Split. If Aggregate, PMID, Has Target Disease, sentence, Has Study Drug(s), __index_level_0__, Has Comparator Group, Number of Annotators, Abstract, Has Quantitative Outcome Measure, Has Human Subjects, Title, Has Population Size, Cohort Study or Clinical Trial, Split are not expected by `BertForSequenceClassification.forward`,  you can safely ignore this message.
+[INFO|trainer.py:3213] 2023-10-20 23:03:09,860 >> ***** Running Evaluation *****
+[INFO|trainer.py:3215] 2023-10-20 23:03:09,860 >>   Num examples = 997
+[INFO|trainer.py:3218] 2023-10-20 23:03:09,860 >>   Batch size = 8
+ 25%|██▌       | 8/32 [00:00<00:01, 16.42it/s]
+  File "/scratch/taw2/biosift/benchmarks/supervised/./src/run_supervised.py", line 539, in <module>
+    main()
+  File "/scratch/taw2/biosift/benchmarks/supervised/./src/run_supervised.py", line 491, in main
+    train_result = trainer.train()
+                   ^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 1591, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 1999, in _inner_training_loop
+    self._maybe_log_save_evaluate(tr_loss, model, trial, epoch, ignore_keys_for_eval)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2339, in _maybe_log_save_evaluate
+    self._save_checkpoint(model, trial, metrics=metrics)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2396, in _save_checkpoint
+    self.save_model(output_dir, _internal_call=True)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2901, in save_model
+    self._save(output_dir)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2938, in _save
+    os.makedirs(output_dir, exist_ok=True)
+  File "<frozen os>", line 225, in makedirs
+PermissionError: [Errno 13] Permission denied: '/checkpoint-501'
+{'eval_loss': 0.20170173048973083, 'eval_f1_micro': array([1.        , 0.97789757, 0.96828753, 0.94881673, 0.91822956,
+       0.96787565, 0.98311008, 0.69194313]), 'eval_precision_micro': array([1.        , 0.97631862, 0.94628099, 0.92688172, 0.93577982,
+       0.93869347, 0.97685185, 0.90965732]), 'eval_recall_micro': array([1.        , 0.97948164, 0.99134199, 0.97181511, 0.90132548,
+       0.99893048, 0.989449  , 0.5583174 ]), 'eval_runtime': 2.3692, 'eval_samples_per_second': 420.817, 'eval_steps_per_second': 13.507, 'epoch': 1.0}

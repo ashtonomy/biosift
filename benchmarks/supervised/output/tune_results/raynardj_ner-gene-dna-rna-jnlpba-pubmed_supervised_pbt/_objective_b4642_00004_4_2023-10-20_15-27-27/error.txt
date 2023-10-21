@@ -1,0 +1,88 @@
+Failure # 1 (occurred at 2023-10-20_16-02-23)
+[36mray::ImplicitFunc.train()[39m (pid=3632981, ip=10.125.6.140, actor_id=3a808f7c20a5009b26b5c62a01000000, repr=_objective)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/trainable.py", line 375, in train
+    raise skipped from exception_cause(skipped)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/function_trainable.py", line 349, in entrypoint
+    return self._trainable_func(
+           ^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/function_trainable.py", line 666, in _trainable_func
+    output = fn()
+             ^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/integrations/integration_utils.py", line 354, in dynamic_modules_import_trainable
+    return trainable(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/util.py", line 324, in inner
+    return trainable(config, **fn_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/integrations/integration_utils.py", line 255, in _objective
+    local_trainer.train(resume_from_checkpoint=checkpoint, trial=trial)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 1591, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 1892, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2776, in training_step
+    loss = self.compute_loss(model, inputs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2801, in compute_loss
+    outputs = model(**inputs)
+              ^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/models/roberta/modeling_roberta.py", line 1198, in forward
+    outputs = self.roberta(
+              ^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/models/roberta/modeling_roberta.py", line 844, in forward
+    encoder_outputs = self.encoder(
+                      ^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/models/roberta/modeling_roberta.py", line 529, in forward
+    layer_outputs = layer_module(
+                    ^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/models/roberta/modeling_roberta.py", line 413, in forward
+    self_attention_outputs = self.attention(
+                             ^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/models/roberta/modeling_roberta.py", line 340, in forward
+    self_outputs = self.self(
+                   ^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/models/roberta/modeling_roberta.py", line 260, in forward
+    attention_scores = attention_scores / math.sqrt(self.attention_head_size)
+                       ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 384.00 MiB. GPU 0 has a total capacty of 15.77 GiB of which 55.62 MiB is free. Including non-PyTorch memory, this process has 15.67 GiB memory in use. Of the allocated memory 15.06 GiB is allocated by PyTorch, and 249.07 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

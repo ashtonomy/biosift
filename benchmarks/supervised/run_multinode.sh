@@ -1,12 +1,12 @@
 #PBS -N biosift
-#PBS -l select=2:ncpus=24:ngpus=2:gpu_model=v100:mem=100gb,walltime=72:00:00
+#PBS -l select=2:ncpus=24:ngpus=2:gpu_model=a100:mem=100gb,walltime=72:00:00
 #PBS -j oe
 #PBS -o output/supervised_run.log
 
 cd $PBS_O_WORKDIR
 
 ### JOB PARAMS
-model_name=$
+model_name=$MODEL_NAME
 dataset="/scratch/taw2/biosift/dataset/hf_datasets/binary_dataset/"
 ENV_NAME="/scratch/taw2/conda_envs/biosift_env"
 
@@ -60,4 +60,8 @@ pbsdsh -- bash "${PBS_O_WORKDIR}/run.sh" \
                 --evaluation_strategy epoch \
                 --load_best_model_at_end \
                 --output_dir ${output_dir}/" 
+
+        
+        
+
 

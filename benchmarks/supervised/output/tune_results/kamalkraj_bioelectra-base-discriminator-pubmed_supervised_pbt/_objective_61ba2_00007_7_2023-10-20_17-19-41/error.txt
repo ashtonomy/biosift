@@ -1,0 +1,55 @@
+Failure # 1 (occurred at 2023-10-20_19-15-32)
+[36mray::ImplicitFunc.train()[39m (pid=3676746, ip=10.125.6.140, actor_id=8c0cbc93dc9dcc34f00c0c3e01000000, repr=_objective)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/trainable.py", line 375, in train
+    raise skipped from exception_cause(skipped)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/function_trainable.py", line 349, in entrypoint
+    return self._trainable_func(
+           ^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/function_trainable.py", line 666, in _trainable_func
+    output = fn()
+             ^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/integrations/integration_utils.py", line 354, in dynamic_modules_import_trainable
+    return trainable(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/ray/tune/trainable/util.py", line 324, in inner
+    return trainable(config, **fn_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/integrations/integration_utils.py", line 255, in _objective
+    local_trainer.train(resume_from_checkpoint=checkpoint, trial=trial)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 1591, in train
+    return inner_training_loop(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer.py", line 2060, in _inner_training_loop
+    self.control = self.callback_handler.on_train_end(args, self.state, self.control)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer_callback.py", line 365, in on_train_end
+    return self.call_event("on_train_end", args, state, control)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/trainer_callback.py", line 406, in call_event
+    result = getattr(callback, event)(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/transformers/integrations/integration_utils.py", line 798, in on_train_end
+    with artifact.new_file(f.name, mode="wb") as fa:
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/contextlib.py", line 144, in __exit__
+    next(self.gen)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/wandb/sdk/artifacts/artifact.py", line 1145, in new_file
+    self.add_file(path, name=name)
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/wandb/sdk/artifacts/artifact.py", line 1194, in add_file
+    return self._add_local_file(name, local_path, digest=digest)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/site-packages/wandb/sdk/artifacts/artifact.py", line 1469, in _add_local_file
+    with tempfile.NamedTemporaryFile(dir=get_staging_dir(), delete=False) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/tempfile.py", line 563, in NamedTemporaryFile
+    file = _io.open(dir, mode, buffering=buffering,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/tempfile.py", line 560, in opener
+    fd, name = _mkstemp_inner(dir, prefix, suffix, flags, output_type)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/taw2/conda_envs/biosift_env/lib/python3.11/tempfile.py", line 256, in _mkstemp_inner
+    fd = _os.open(file, flags, 0o600)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 122] Disk quota exceeded: '/home/taw2/.local/share/wandb/artifacts/staging/tmpa25zz702'

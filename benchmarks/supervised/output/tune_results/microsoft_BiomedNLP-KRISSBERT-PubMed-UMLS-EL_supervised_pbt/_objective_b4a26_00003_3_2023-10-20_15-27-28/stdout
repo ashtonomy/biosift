@@ -1,0 +1,15 @@
+:actor_name:_objective
+{'loss': 0.3228, 'learning_rate': 0.00012056040447670929, 'epoch': 0.5}
+{'loss': 0.3463, 'learning_rate': 0.00010717967146042635, 'epoch': 1.0}
+{'eval_loss': 0.3283061981201172, 'eval_f1_micro': 0.9150499706055262, 'eval_f1_macro': 0.8849856831833801, 'eval_precision_micro': 0.9044160371876816, 'eval_precision_macro': 0.8874489321623407, 'eval_recall_micro': 0.9259369422962522, 'eval_recall_macro': 0.894538278933422, 'eval_combined_score': 0.9020626407281006, 'eval_runtime': 10.9865, 'eval_samples_per_second': 90.748, 'eval_steps_per_second': 11.378, 'epoch': 1.0}
+:actor_name:_objective
+{'loss': 0.3267, 'learning_rate': 9.379893844414341e-05, 'epoch': 1.5}
+{'loss': 0.3459, 'learning_rate': 8.041820542786046e-05, 'epoch': 2.0}
+{'eval_loss': 0.35667720437049866, 'eval_f1_micro': 0.9050572867255345, 'eval_f1_macro': 0.8208780831016904, 'eval_precision_micro': 0.8885227109901132, 'eval_precision_macro': 0.7774573721163491, 'eval_recall_micro': 0.9222189173111244, 'eval_recall_macro': 0.875, 'eval_combined_score': 0.8648557283741353, 'eval_runtime': 10.9108, 'eval_samples_per_second': 91.377, 'eval_steps_per_second': 11.457, 'epoch': 2.0}
+:actor_name:_objective
+{'eval_loss': 0.19408094882965088, 'eval_f1_micro': 0.9513392857142858, 'eval_f1_macro': 0.9383476917926344, 'eval_precision_micro': 0.951905896366885, 'eval_precision_macro': 0.9427798364079603, 'eval_recall_micro': 0.9507733491969066, 'eval_recall_macro': 0.9355926066309983, 'eval_combined_score': 0.9451231110182784, 'eval_runtime': 10.9295, 'eval_samples_per_second': 91.221, 'eval_steps_per_second': 11.437, 'epoch': 4.0}
+:actor_name:_objective
+{'loss': 0.147, 'learning_rate': 1.038094634379482e-07, 'epoch': 4.99}
+{'eval_loss': 0.19079352915287018, 'eval_f1_micro': 0.9540657053664339, 'eval_f1_macro': 0.9421413023153911, 'eval_precision_micro': 0.9536404160475483, 'eval_precision_macro': 0.9433044297062227, 'eval_recall_micro': 0.9544913741820346, 'eval_recall_macro': 0.941342190370672, 'eval_combined_score': 0.9481642363313837, 'eval_runtime': 10.9508, 'eval_samples_per_second': 91.043, 'eval_steps_per_second': 11.415, 'epoch': 5.0}
+:actor_name:_objective
+{'train_runtime': 6.7131, 'train_samples_per_second': 5962.189, 'train_steps_per_second': 373.149, 'train_loss': 0.0, 'epoch': 5.0}

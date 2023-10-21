@@ -1,0 +1,4 @@
+:actor_name:_objective
+{'loss': 0.3342, 'learning_rate': 4.993816648005517e-05, 'epoch': 0.5}
+{'loss': 0.2516, 'learning_rate': 4.4395639678717186e-05, 'epoch': 1.0}
+{'eval_loss': 0.2260725349187851, 'eval_f1_micro': 0.9465536306671581, 'eval_f1_macro': 0.9325667917127397, 'eval_precision_micro': 0.9384592895775471, 'eval_precision_macro': 0.9296550976752427, 'eval_recall_micro': 0.9547888161808448, 'eval_recall_macro': 0.9383694204191737, 'eval_combined_score': 0.940065507705451, 'eval_runtime': 46.5963, 'eval_samples_per_second': 21.397, 'eval_steps_per_second': 2.683, 'epoch': 1.0}

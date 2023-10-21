@@ -1,5 +1,5 @@
 #PBS -N biosift
-#PBS -l select=1:ncpus=24:ngpus=2:gpu_model=v100:mem=100gb,walltime=72:00:00
+#PBS -l select=1:ncpus=30:ngpus=2:gpu_model=a100:mem=200gb,walltime=72:00:00
 #PBS -j oe
 #PBS -o output/supervised_run.log
 
@@ -36,13 +36,13 @@ NNODES=$(cat $PBS_NODEFILE | wc -l)
 ncpus=$NCPUS
 
 export WANDB_PROJECT="biosift"
-export WANDB_LOG_MODEL=true
 export WANDB_JOB_NAME="supervised_hpo_${model_name//\//_}"
+export TUNE_RESULT_DIR="/scratch/taw2/.cache/raytune/"
 
 # HPO search space loosely inspired by Liu & Wang 2021
 # https://aclanthology.org/2021.acl-long.178.pdf
 
-"./src/run_supervised_hpo.py \
+python3 ./src/run_supervised_hpo.py \
         --model_name_or_path ${model_name} \
         --ignore_mismatched_sizes \
         --dataset_name ${dataset} \
@@ -63,6 +63,6 @@ export WANDB_JOB_NAME="supervised_hpo_${model_name//\//_}"
         --cpus_per_trial $(( $NCPUS / 2)) \
         --gpus_per_trial 1 \
         --max_weight_decay 0.3 \
-        --max_learing_rate 1.5e-4 \
-        --tuning_batch_sizes 8 16 32" 
+        --max_learning_rate 1.5e-4 \
+        --tuning_batch_sizes 8 16 32
 
