@@ -72,6 +72,8 @@ from .trainer_utils import (
 )
 from .training_args import OptimizerNames, ParallelMode, TrainingArguments
 
+from transformers.models.bert.modeling_bert import *
+
 
 def BertLabelEmbedding(nn.Module):
     def __init__(self, config, pretrained_model=None, pretrained_tokenizer=None):
@@ -79,23 +81,47 @@ def BertLabelEmbedding(nn.Module):
 
         self.num_labels = config.num_labels
         self.config = config
-        self.init_weights(pretrained_model, pretrained_tokenizer)        
+
+        self.init_weights(pretrained_model, pretrained_tokenizer)
     
-    def init_weights(self, model, tokenizer):
+    def init_weights(self, weights = None, model=None, tokenizer=None):
         """
         Initialize label embedding matrix with sentence embeddings of labels.
         Hidden size of config/model should match target model. 
         """
+        
+        # Tokenize and encode label names
+        self.label_names = self.config.label2idx.keys()
 
-        # Get list of string label names
-        label_names = self.config.label2idx.keys()
-        tokenized_labels = tokenizer(label_names)
-        init_embeddings = model(tokenized_labels).pooler_output # CLS TOKEN OUT
-        self.label_attention_matrix = nn.Parameter(init_embeddings)    # num_labels x hidden_dim
+        if model is not None and tokenizer is not None:
+            tokenized_labels = tokenizer(self.label_names)
+        
+            # Get hidden representation of label encodings
+            model.eval()
+            with torch.no_grad():
+                init_embeddings = model(tokenized_labels)[1] # CLS TOKEN OUT
+        
+            self.label_attention_matrix = nn.Parameter(init_embeddings)    # n_labels x hidden_dim
 
     def forward(self, inputs):
-        pass    
-    
+        """
+        Calculate cosine distance between each sample and each label
+        
+        args
+            inputs: Tensor of shape (N x hidden_dim)
+        returns
+            tensor of shape N x num_classes
+        """
+
+        # Compute cosine similarity matrix
+        eps = 1e-8
+        X_n = X.norm(dim=1)[:, None]
+        W_n = self.label_attention_matrix.norm(dim=1)[:, None]
+        X_norm = X / torch.where(W_n < eps, W_n)
+        W_norm = self.label_attention_matrix / torch.where(W_n < eps, eps, W_n)
+        cos_sim = torch.mm(X_norm, self.label_attention_matrix.T)
+
+        return cos_sim
 
 class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
     def __init__(self, config):
@@ -104,21 +130,8 @@ class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
         self.config = config
 
         self.bert = BertModel(config)
-
-        #TODO: Move the following to separate class
-
-        # Internal flag representing whether 
-        self.init_embedding = True
-
-        # Label Embedding
-        self.label_embedding_dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.init_label_embedding(self)
-                
-        self.cosine_similarity = nn.CosineSimilarity()
-        
-        self.distance_embedding_dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.distance_embedding = nn.Linear(config.num_labels, config.num_labels)
-        
+        self.label_embedding = BertLabelEmbedding(config, self.bert)
+        self.label_embedding_dropout = nn.Dropout(config.hidden_dropout_prob)        
 
         classifier_dropout = (
             config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
@@ -126,19 +139,8 @@ class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
         self.dropout = nn.Dropout(classifier_dropout)
         self.classifier = nn.Linear(config.hidden_size, config.num_labels)
 
-
         # Initialize weights and apply final processing
         self.post_init()
-
-    def init_label_embedding(self):
-        """
-        Initialize    
-        """
-
-        
-        
-
-
 
     def forward(
         self,
@@ -174,9 +176,13 @@ class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
         )
 
         pooled_output = outputs[1]
-
         pooled_output = self.dropout(pooled_output)
-        logits = self.classifier(pooled_output)
+
+        label_embedding_output = self.label_embedding.forward(inputs)
+        label_embedding_output = self.label_embedding_dropout(label_embedding_output)
+
+        combined_output = pooled_output * label_embedding_output
+        logits = self.classifier(combined_output)
 
         loss = None
         if labels is not None:
@@ -210,3 +216,37 @@ class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )
+
+    def from_pretrained(
+        pretrained_model_name_or_path: typing.Union[str, os.PathLike, NoneType],
+        *model_args,
+        config: typing.Union[transformers.configuration_utils.PretrainedConfig, str, os.PathLike, NoneType] = None,
+        cache_dir: typing.Union[str, os.PathLike, NoneType] = None,
+        ignore_mismatched_sizes: bool = False,
+        force_download: bool = False,
+        local_files_only: bool = False,
+        token: typing.Union[str, bool, NoneType] = None,
+        revision: str = 'main',
+        use_safetensors: bool = None,
+        **kwargs
+    ): 
+        """
+        Overriding from_pretrained for label_attention
+        """
+        super().from_pretrained(pretrained_model_name_or_path,
+                                model_args,
+                                config,
+                                cache_dir,
+                                ignore_mismatched_sizes,
+                                force_download,
+                                local_files_only,
+                                token,
+                                revision,
+                                use_safetensors,
+                                kwargs)
+
+        if os.path.exists(pretrained_model_name_or_path):
+            if os.path.exists():
+                torch.load(model, "model.pth") 
+        else:
+            pass # No pretrained weights for embedding layer
