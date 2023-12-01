@@ -1,3 +1,6 @@
+"""
+Bert implementation with Label Attention
+"""
 import contextlib
 import copy
 import functools
@@ -14,123 +17,91 @@ import time
 import warnings
 from collections.abc import Mapping
 from pathlib import Path
+import typing
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
 
-import huggingface_hub.utils as hf_hub_utils
 import numpy as np
 import torch
 import torch.distributed as dist
-from huggingface_hub import create_repo, upload_folder
 from packaging import version
 from torch import nn
-from torch.utils.data import DataLoader, Dataset, RandomSampler, SequentialSampler
 
-from . import __version__
-from .configuration_utils import PretrainedConfig
-from .data.data_collator import DataCollator, DataCollatorWithPadding, default_data_collator
-from .debug_utils import DebugOption, DebugUnderflowOverflow
-from .hyperparameter_search import ALL_HYPERPARAMETER_SEARCH_BACKENDS, default_hp_search_backend
-from .integrations.deepspeed import deepspeed_init, deepspeed_load_checkpoint, is_deepspeed_available
-from .modelcard import TrainingSummary
-from .modeling_utils import PreTrainedModel, load_sharded_checkpoint, unwrap_model
-from .models.auto.modeling_auto import MODEL_FOR_CAUSAL_LM_MAPPING_NAMES, MODEL_MAPPING_NAMES
-from .optimization import Adafactor, get_scheduler
-from .pytorch_utils import ALL_LAYERNORM_LAYERS, is_torch_less_than_1_11
-from .tokenization_utils_base import PreTrainedTokenizerBase
-from .trainer_callback import (
-    CallbackHandler,
-    DefaultFlowCallback,
-    PrinterCallback,
-    ProgressCallback,
-    TrainerCallback,
-    TrainerControl,
-    TrainerState,
-)
-from .trainer_utils import (
-    PREFIX_CHECKPOINT_DIR,
-    BestRun,
-    EvalLoopOutput,
-    EvalPrediction,
-    HPSearchBackend,
-    HubStrategy,
-    IntervalStrategy,
-    PredictionOutput,
-    RemoveColumnsCollator,
-    TrainerMemoryTracker,
-    TrainOutput,
-    default_compute_objective,
-    denumpify_detensorize,
-    enable_full_determinism,
-    find_executable_batch_size,
-    get_last_checkpoint,
-    has_length,
-    neftune_post_forward_hook,
-    number_of_arguments,
-    seed_worker,
-    set_seed,
-    speed_metrics,
-)
-from .training_args import OptimizerNames, ParallelMode, TrainingArguments
-
+from transformers.configuration_utils import PretrainedConfig
+from transformers.modeling_utils import PreTrainedModel
 from transformers.models.bert.modeling_bert import *
 
+import logging
 
-def BertLabelEmbedding(nn.Module):
+logger = logging.getLogger(__name__)
+
+
+class BertLabelEmbedding(nn.Module):
     def __init__(self, config, pretrained_model=None, pretrained_tokenizer=None):
-        super(LabelEmbedding, self).__init__()
+        super(BertLabelEmbedding, self).__init__()
 
         self.num_labels = config.num_labels
         self.config = config
+        self.label_names = list(self.config.label2id.keys())
+        self.label_attention_matrix = None
 
-        self.init_weights(pretrained_model, pretrained_tokenizer)
+        # self.label_attention_matrix = nn.Parameter(torch.zeros((self.num_labels,
+        #                                                         self.config.hidden_size)))  # n_labels x hidden_size
+
+        # Set this flag if pretrained weights will be loaded
+        self.pretrained_weights = False
+
+        # if not self.pretrained_weights:
+        #     logger.info("Initializing label attention weights with model embeddings.")
+        #     self.init_weights(pretrained_model, pretrained_tokenizer)
+            
     
-    def init_weights(self, weights = None, model=None, tokenizer=None):
+    def init_weights(self, model, tokenizer):
         """
         Initialize label embedding matrix with sentence embeddings of labels.
         Hidden size of config/model should match target model. 
         """
         
-        # Tokenize and encode label names
-        self.label_names = self.config.label2idx.keys()
-
         if model is not None and tokenizer is not None:
-            tokenized_labels = tokenizer(self.label_names)
-        
+            logger.info(f"Initializing to label embeddings:\n{self.label_names}")
+            tokenized_labels = tokenizer(self.label_names, padding="max_length", return_tensors="pt")
+
             # Get hidden representation of label encodings
             model.eval()
             with torch.no_grad():
-                init_embeddings = model(tokenized_labels)[1] # CLS TOKEN OUT
+                init_embeddings = model(**tokenized_labels)[1] # CLS TOKEN OUT
         
-            self.label_attention_matrix = nn.Parameter(init_embeddings)    # n_labels x hidden_dim
+            self.label_attention_matrix = nn.Parameter(init_embeddings)    # n_labels x hidden_size
 
     def forward(self, inputs):
         """
         Calculate cosine distance between each sample and each label
         
         args
-            inputs: Tensor of shape (N x hidden_dim)
+            X: Tensor of shape (N x hidden_size)
         returns
             tensor of shape N x num_classes
         """
 
         # Compute cosine similarity matrix
         eps = 1e-8
-        X_n = X.norm(dim=1)[:, None]
+        inputs_n = inputs.norm(dim=1)[:, None]
         W_n = self.label_attention_matrix.norm(dim=1)[:, None]
-        X_norm = X / torch.where(W_n < eps, W_n)
+        inputs_norm = inputs / torch.where(inputs_n < eps, eps, inputs_n)
         W_norm = self.label_attention_matrix / torch.where(W_n < eps, eps, W_n)
-        cos_sim = torch.mm(X_norm, self.label_attention_matrix.T)
+        cos_sim = torch.mm(inputs_norm, W_norm.T)
 
         return cos_sim
 
 class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
-    def __init__(self, config):
+    def __init__(self, config, *inputs, **kwargs):
         super().__init__(config)
         self.num_labels = config.num_labels
         self.config = config
+        logger.info(f"Initializing model with {self.num_labels} labels")
 
         self.bert = BertModel(config)
-        self.label_embedding = BertLabelEmbedding(config, self.bert)
+        
+        self.label_embedding = BertLabelEmbedding(config)
         self.label_embedding_dropout = nn.Dropout(config.hidden_dropout_prob)        
 
         classifier_dropout = (
@@ -178,11 +149,11 @@ class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
         pooled_output = outputs[1]
         pooled_output = self.dropout(pooled_output)
 
-        label_embedding_output = self.label_embedding.forward(inputs)
+        label_embedding_output = self.label_embedding.forward(pooled_output)
         label_embedding_output = self.label_embedding_dropout(label_embedding_output)
 
-        combined_output = pooled_output * label_embedding_output
-        logits = self.classifier(combined_output)
+        logits = self.classifier(pooled_output)
+        logits = logits * label_embedding_output
 
         loss = None
         if labels is not None:
@@ -217,36 +188,78 @@ class BertForLabelAttendedSequenceClassification(BertPreTrainedModel):
             attentions=outputs.attentions,
         )
 
+    @classmethod
     def from_pretrained(
-        pretrained_model_name_or_path: typing.Union[str, os.PathLike, NoneType],
+        cls,
+        pretrained_model_name_or_path: Optional[Union[str, os.PathLike]],
         *model_args,
-        config: typing.Union[transformers.configuration_utils.PretrainedConfig, str, os.PathLike, NoneType] = None,
-        cache_dir: typing.Union[str, os.PathLike, NoneType] = None,
+        config: Optional[Union[PretrainedConfig, str, os.PathLike]] = None,
+        cache_dir: Optional[Union[str, os.PathLike]] = None,
         ignore_mismatched_sizes: bool = False,
         force_download: bool = False,
         local_files_only: bool = False,
-        token: typing.Union[str, bool, NoneType] = None,
-        revision: str = 'main',
+        token: Optional[Union[str, bool]] = None,
+        revision: str = "main",
         use_safetensors: bool = None,
-        **kwargs
-    ): 
+        **kwargs,
+    ):
         """
-        Overriding from_pretrained for label_attention
+        Overriding from_pretrained for label_attention weights. 
         """
-        super().from_pretrained(pretrained_model_name_or_path,
-                                model_args,
-                                config,
-                                cache_dir,
-                                ignore_mismatched_sizes,
-                                force_download,
-                                local_files_only,
-                                token,
-                                revision,
-                                use_safetensors,
-                                kwargs)
+        model = super().from_pretrained(pretrained_model_name_or_path,
+                                        model_args,
+                                        config,
+                                        cache_dir,
+                                        ignore_mismatched_sizes,
+                                        force_download = force_download,
+                                        local_files_only = local_files_only,
+                                        token = token,
+                                        revision = revision,
+                                        use_safetensors = use_safetensors,
+                                        **kwargs)
 
-        if os.path.exists(pretrained_model_name_or_path):
-            if os.path.exists():
-                torch.load(model, "model.pth") 
-        else:
-            pass # No pretrained weights for embedding layer
+        weight_path = os.path.join(pretrained_model_name_or_path, "label_embedding.pt")
+        if os.path.exists(weight_path):
+            logger.info(f"Initializing label embedding weights from {pretrained_model_name_or_path}.")
+            model.label_embedding.label_attention_matrix = torch.load(weight_path)
+            model.label_embedding.pretrained_weights = True
+        elif "tokenizer" in kwargs:
+            if "model" in kwargs:
+                model.label_embedding.init_weights(kwargs["model"], kwargs["tokenizer"])
+            else:
+                model.label_embedding.init_weights(model.bert, kwargs["tokenizer"])
+        
+        return model
+
+    def save_pretrained(
+        self,
+        save_directory: Union[str, os.PathLike],
+        is_main_process: bool = True,
+        state_dict: Optional[dict] = None,
+        save_function: Callable = torch.save,
+        push_to_hub: bool = False,
+        max_shard_size: Union[int, str] = "5GB",
+        safe_serialization: bool = True,
+        variant: Optional[str] = None,
+        token: Optional[Union[str, bool]] = None,
+        save_peft_format: bool = True,
+        **kwargs,
+    ):
+        """
+        Saves base model plus label_embedding in save directory
+        """
+
+        super().save_pretrained(save_directory,
+                                is_main_process,
+                                state_dict,
+                                save_function = save_function,
+                                push_to_hub = push_to_hub,
+                                max_shard_size = max_shard_size,
+                                safe_serialization = safe_serialization,
+                                variant = variant,
+                                token = token,
+                                save_peft_format = save_peft_format,
+                                **kwargs)
+
+
+        torch.save(self.label_embedding.state_dict(), os.path.join(save_directory, "label_embedding.pt"))

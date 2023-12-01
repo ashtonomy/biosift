@@ -1,0 +1,133 @@
+{
+  "best_metric": 0.1924712061882019,
+  "best_model_checkpoint": "/scratch/taw2/biosift/label_attention/output/microsoft_BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext_11_30_23_22_53_24/checkpoint-2004",
+  "epoch": 5.0,
+  "eval_steps": 500,
+  "global_step": 2505,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 1.0,
+      "learning_rate": 2.4011976047904193e-05,
+      "loss": 0.325,
+      "step": 500
+    },
+    {
+      "epoch": 1.0,
+      "eval_combined_score": 0.9423958630099646,
+      "eval_f1_macro": 0.9347719411270449,
+      "eval_f1_micro": 0.9487465595477201,
+      "eval_loss": 0.2228141725063324,
+      "eval_precision_macro": 0.9427559489295428,
+      "eval_precision_micro": 0.949099568388153,
+      "eval_recall_macro": 0.9306073468609015,
+      "eval_recall_micro": 0.9483938132064248,
+      "eval_runtime": 8.1996,
+      "eval_samples_per_second": 121.592,
+      "eval_steps_per_second": 15.245,
+      "step": 501
+    },
+    {
+      "epoch": 2.0,
+      "learning_rate": 1.8023952095808382e-05,
+      "loss": 0.2544,
+      "step": 1000
+    },
+    {
+      "epoch": 2.0,
+      "eval_combined_score": 0.9495434888974293,
+      "eval_f1_macro": 0.9442059895080119,
+      "eval_f1_micro": 0.9547501291798922,
+      "eval_loss": 0.20092418789863586,
+      "eval_precision_macro": 0.938147851843008,
+      "eval_precision_micro": 0.9478235380331232,
+      "eval_recall_macro": 0.950554721667655,
+      "eval_recall_micro": 0.9617787031528852,
+      "eval_runtime": 8.1829,
+      "eval_samples_per_second": 121.84,
+      "eval_steps_per_second": 15.276,
+      "step": 1002
+    },
+    {
+      "epoch": 2.99,
+      "learning_rate": 1.2035928143712574e-05,
+      "loss": 0.2252,
+      "step": 1500
+    },
+    {
+      "epoch": 3.0,
+      "eval_combined_score": 0.9487683007517198,
+      "eval_f1_macro": 0.9425473238243086,
+      "eval_f1_micro": 0.9545956288174259,
+      "eval_loss": 0.19406627118587494,
+      "eval_precision_macro": 0.9354843059720581,
+      "eval_precision_micro": 0.9447924253459578,
+      "eval_recall_macro": 0.9505857184089854,
+      "eval_recall_micro": 0.9646044021415824,
+      "eval_runtime": 8.1681,
+      "eval_samples_per_second": 122.061,
+      "eval_steps_per_second": 15.304,
+      "step": 1503
+    },
+    {
+      "epoch": 3.99,
+      "learning_rate": 6.047904191616767e-06,
+      "loss": 0.2034,
+      "step": 2000
+    },
+    {
+      "epoch": 4.0,
+      "eval_combined_score": 0.9484615752251805,
+      "eval_f1_macro": 0.9415226314231313,
+      "eval_f1_micro": 0.9548827545265657,
+      "eval_loss": 0.1924712061882019,
+      "eval_precision_macro": 0.9430112109790936,
+      "eval_precision_micro": 0.9529028436018957,
+      "eval_recall_macro": 0.9415791006478813,
+      "eval_recall_micro": 0.9568709101725164,
+      "eval_runtime": 8.1767,
+      "eval_samples_per_second": 121.932,
+      "eval_steps_per_second": 15.287,
+      "step": 2004
+    },
+    {
+      "epoch": 4.99,
+      "learning_rate": 5.988023952095808e-08,
+      "loss": 0.1872,
+      "step": 2500
+    },
+    {
+      "epoch": 5.0,
+      "eval_combined_score": 0.9481606020182003,
+      "eval_f1_macro": 0.9415654733559502,
+      "eval_f1_micro": 0.9544846050870146,
+      "eval_loss": 0.1933445930480957,
+      "eval_precision_macro": 0.9441406464102392,
+      "eval_precision_micro": 0.9546265992264207,
+      "eval_recall_macro": 0.9398036348469478,
+      "eval_recall_micro": 0.9543426531826293,
+      "eval_runtime": 8.2668,
+      "eval_samples_per_second": 120.602,
+      "eval_steps_per_second": 15.121,
+      "step": 2505
+    },
+    {
+      "epoch": 5.0,
+      "step": 2505,
+      "total_flos": 1.05323427600384e+16,
+      "train_loss": 0.2389022856891274,
+      "train_runtime": 964.6537,
+      "train_samples_per_second": 41.492,
+      "train_steps_per_second": 2.597
+    }
+  ],
+  "logging_steps": 500,
+  "max_steps": 2505,
+  "num_train_epochs": 5,
+  "save_steps": 500,
+  "total_flos": 1.05323427600384e+16,
+  "trial_name": null,
+  "trial_params": null
+}
